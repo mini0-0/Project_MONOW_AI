@@ -1,0 +1,1645 @@
+{
+  "pdf_sha256": "d48f701f84324f734aa2b4fa255d69df2d46bc311e27a16fe50f48041cc9ac9b",
+  "provenance": "data/debug/legacy_results/quality_review/quality_review.json",
+  "reviews": [
+    {
+      "term": "가계순저축률",
+      "status": "검증 통과",
+      "finding": "슬래시로 적힌 분모 괄호, 사회적현물이전수취·연금기금 조정항과 ×100이 모두 남아 있다. 단순 조판 줄바꿈만 정제된다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 20,
+      "source_book_page": 2
+    },
+    {
+      "term": "경제성장률",
+      "status": "추출 오류",
+      "finding": "원본은 금년 실질GDP−전년 실질GDP를 전년 실질GDP로 나눈 분수다. JSON은 분자를 등호보다 먼저 배치하고 분수선/나눗셈 관계를 잃었다. 숫자·단어 보존과 별개의 수식 구조 손실이다. 원본 식 자체에도 ×100은 인쇄되어 있지 않으므로 ×100 누락 오류로 계산하지 않았다.",
+      "finding_codes": [
+        "fraction_structure_lost"
+      ],
+      "source_pdf_page": 33,
+      "source_book_page": 15
+    },
+    {
+      "term": "경제활동인구/비경제활동인구/경제활동참가율",
+      "status": "추출 오류",
+      "finding": "분자는 경제활동인구(취업자+실업자), 분모는 15세 이상 인구이며 원본은 분수 뒤 ×100이다. JSON은 분자/등호/×100/분모 순으로 풀려 분수 구조를 전달하지 못한다.",
+      "finding_codes": [
+        "fraction_structure_lost"
+      ],
+      "source_pdf_page": 35,
+      "source_book_page": 17
+    },
+    {
+      "term": "고용률",
+      "status": "검증 통과",
+      "finding": "고용률·실업률 두 식의 /, ×100과 각 분모가 보존됐다. 다음 페이지의 빈 영역은 설명 누락이 아니다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 38,
+      "source_book_page": 20
+    },
+    {
+      "term": "고정자본소모",
+      "status": "수동 검토 필요",
+      "finding": "주 식의 빼기와 괄호는 보존됐다. 원본에서 순생산액·총생산액 아래에 배치된 (순소득)·(총소득)이 JSON에서는 별도 줄로 분리된다. 주석과 대상 항의 대응을 정제본에서도 이해할 수 있는지 검토가 필요하다.",
+      "finding_codes": [
+        "annotation_alignment_lost"
+      ],
+      "source_pdf_page": 42,
+      "source_book_page": 24
+    },
+    {
+      "term": "공급탄력성",
+      "status": "검증 통과",
+      "finding": "변화율÷변화율, 1%, 0, ∞ 및 탄력/비탄력의 설명이 보존됐다. 독립된 분수 그림은 없다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 46,
+      "source_book_page": 28
+    },
+    {
+      "term": "국민소득",
+      "status": "검증 통과",
+      "finding": "다섯 줄의 국민소득 등식과 −/+, 보조금·피용자보수·영업잉여 항이 모두 보존됐다. 56→57쪽 연결도 유지됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 56,
+      "source_book_page": 38
+    },
+    {
+      "term": "국민소득 3면 등가의 법칙",
+      "status": "검증 통과",
+      "finding": "생산GDP=지출GDP=분배GDP의 본문 등식이 보존됐다. 기호 탐지에 의한 검토 후보이며 손상은 발견하지 않았다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 57,
+      "source_book_page": 39
+    },
+    {
+      "term": "국민처분가능소득(NDI)/국민총처분가능소득(GNDI)",
+      "status": "수동 검토 필요",
+      "finding": "본문·주석·두 등식의 설명은 보존됐다. ** 주석 앞 U+200C와 U+0007이 JSON에 남는다. PDF 화면에서 의미 있는 글자나 수학기호로 보이지 않으며 pdfminer는 둘 다 반환하지 않는다. 의미 누락보다 비가시문자 처리 정책 문제다.",
+      "finding_codes": [
+        "invisible_control_characters_retained"
+      ],
+      "source_pdf_page": 58,
+      "source_book_page": 40
+    },
+    {
+      "term": "국외저축",
+      "status": "검증 통과",
+      "finding": "양(+), 경상수지 적자와 순대외채무(=대외채무−대외채권)의 설명을 포함해 60→61쪽이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 60,
+      "source_book_page": 42
+    },
+    {
+      "term": "국외투자율",
+      "status": "검증 통과",
+      "finding": "GNDI 등식과 총투자율·국내총투자율·국외투자율의 /GNDI 및 ×100이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 61,
+      "source_book_page": 43
+    },
+    {
+      "term": "금리평가이론",
+      "status": "추출 오류",
+      "finding": "원본 첫 식의 ￦1억/S 및 두 번째 식의 (F−S)/S가 JSON에서 분모 S를 다른 줄로 보내면서 연산 관계를 잃는다. 첫 식의 닫는 괄호와 ×F가 분모보다 먼저 나온다. 숫자·연산자 자체의 삭제보다 분수/순서 구조 손실이다.",
+      "finding_codes": [
+        "fraction_structure_lost"
+      ],
+      "source_pdf_page": 77,
+      "source_book_page": 59
+    },
+    {
+      "term": "금융연관비율(골드스미스비율)",
+      "status": "검증 통과",
+      "finding": "국부=유형자산+순대외자산이라는 본문 괄호와 골드스미스 비율 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 83,
+      "source_book_page": 65
+    },
+    {
+      "term": "기본자본(Tier 1)",
+      "status": "검증 통과",
+      "finding": "자기자본=기본자본+보완자본, CET1/AT1과 6.0% 조건이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 90,
+      "source_book_page": 72
+    },
+    {
+      "term": "기업경기실사지수(BSI)",
+      "status": "검증 통과",
+      "finding": "[(긍정적 응답업체−부정적 응답업체)/전체 응답업체]×100+100이 선형식으로 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 91,
+      "source_book_page": 73
+    },
+    {
+      "term": "꼬리위험",
+      "status": "검증 통과",
+      "finding": "99쪽의 정의 세 문장은 완전하다. 100쪽의 이미지는 다음 ㄴ 장 시작 장식이며 꼬리위험의 확률분포 그림이 아니다. 이미지 후보 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 99,
+      "source_book_page": 81
+    },
+    {
+      "term": "노동생산성/노동생산성지수",
+      "status": "검증 통과",
+      "finding": "103→104쪽 연결과 산출량지수/노동투입량지수×100이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 103,
+      "source_book_page": 85
+    },
+    {
+      "term": "뉴스심리지수(NSI)",
+      "status": "검증 통과",
+      "finding": "NSI 설명과 100 기준 해석이 보존됐다. 106쪽의 ㄷ 장 시작 장식이 이미지 후보에 포함된 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 105,
+      "source_book_page": 87
+    },
+    {
+      "term": "단리/복리",
+      "status": "검증 통과",
+      "finding": "단리의 106백만원, 복리의 106.14백만원·^4, 3.07%, 72법칙의 24년/33년이 원본대로 남아 있다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 107,
+      "source_book_page": 89
+    },
+    {
+      "term": "단위노동비용",
+      "status": "추출 오류",
+      "finding": "108쪽의 네 분수로 이어진 등식은 분자들을 먼저, 등호들을 그다음, 분모들을 나중에 읽는다. 노동비용/총산출량 등 각 분자·분모 대응이 JSON에 표시되지 않아 구조 복구가 필요하다.",
+      "finding_codes": [
+        "fraction_structure_lost"
+      ],
+      "source_pdf_page": 107,
+      "source_book_page": 89
+    },
+    {
+      "term": "담보인정비율(LTV)",
+      "status": "검증 통과",
+      "finding": "108→109쪽 설명과 담보대출금액·선순위채권·임차보증금, 담보가치, ×100이 보존됐다. 원본 자체의 괄호 표기를 임의 수정하지 않았다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 108,
+      "source_book_page": 90
+    },
+    {
+      "term": "듀레이션",
+      "status": "검증 통과",
+      "finding": "(dp/p)=−〔dr/(1+r)〕×D가 문자 수준에서 보존됐고 가중평균만기의 설명도 유지됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 121,
+      "source_book_page": 103
+    },
+    {
+      "term": "디플레이션",
+      "status": "검증 통과",
+      "finding": "물가·통화가치·부채디플레이션 설명은 완전하다. 125쪽 ㄹ 장 장식이 이미지 후보로 귀속된 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 124,
+      "source_book_page": 106
+    },
+    {
+      "term": "레버리지비율/단순기본자본비율",
+      "status": "검증 통과",
+      "finding": "[기본자본/총익스포저]×100, 3%, 50%, 4% 예시와 126→127쪽 연결이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 126,
+      "source_book_page": 108
+    },
+    {
+      "term": "레버리지 효과",
+      "status": "검증 통과",
+      "finding": "10억원·8억원·자기자본2억원, 5배, +50%/−150% 예시와 127→128쪽 연결이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 127,
+      "source_book_page": 109
+    },
+    {
+      "term": "로렌츠곡선",
+      "status": "수동 검토 필요",
+      "finding": "본문 설명과 그래프의 숫자·축 이름·OO′/OTO′ 관련 문자는 있다. 그러나 세로축 글자가 줄별로 흩어지고 곡선·대각선·화살표·면적 관계는 JSON에 없다. 원본은 벡터 도해로 이미지 탐지에 걸리지 않았다. 본문에 핵심 의미가 설명되어 있어 도해 보존 필요성을 별도 판단해야 한다.",
+      "finding_codes": [
+        "vector_diagram_not_represented"
+      ],
+      "source_pdf_page": 128,
+      "source_book_page": 110
+    },
+    {
+      "term": "리디노미네이션",
+      "status": "검증 통과",
+      "finding": "원(圓)/환(圜) 문자가 원본의 각 괄호 안에 정확히 배치되어 있다. 독립 추출에서 한자만 뒤로 밀리는 형식 차이이며 JSON의 100원→1환, 10환→1원 설명은 보존됐다.",
+      "finding_codes": [
+        "independent_engine_order_difference_only"
+      ],
+      "source_pdf_page": 129,
+      "source_book_page": 111
+    },
+    {
+      "term": "리스크 온(Risk On)/오프(Off)",
+      "status": "검증 통과",
+      "finding": "위험 선호·회피 및 자산 이동 설명은 보존됐다. 131쪽 ㅁ 장 시작 장식이 이미지 후보 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 130,
+      "source_book_page": 112
+    },
+    {
+      "term": "마샬의 k",
+      "status": "검증 통과",
+      "finding": "MV=PY, M=1/V×PY=kPY, MS=Md=kPY가 보존됐다. 원본에서도 MS/Md는 선형 표기이며 임의 첨자 복구를 하지 않았다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 131,
+      "source_book_page": 113
+    },
+    {
+      "term": "매출액영업이익률",
+      "status": "추출 오류",
+      "finding": "영업손익/매출액 등 세 분수의 분자들이 먼저 나오고 등호·×100·분모가 흩어진다. 숫자·연산자는 남지만 어떤 분모와 연결되는지가 없다. 주석의 매출총소익 표기는 원본에도 존재하므로 추출 오류로 바꾸지 않았다.",
+      "finding_codes": [
+        "fraction_structure_lost"
+      ],
+      "source_pdf_page": 135,
+      "source_book_page": 117
+    },
+    {
+      "term": "명목금리/실질금리",
+      "status": "검증 통과",
+      "finding": "3%−1%=2% 예시와 명목/실질금리 설명 및 다음 페이지 문장이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 137,
+      "source_book_page": 119
+    },
+    {
+      "term": "미달러화페그제도",
+      "status": "검증 통과",
+      "finding": "±1%, ±2%와 페그제도 설명이 보존됐다. ± 기호가 있다는 이유만으로 분수식으로 판정하지 않았다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 144,
+      "source_book_page": 126
+    },
+    {
+      "term": "미분양주택",
+      "status": "검증 통과",
+      "finding": "미분양·준공 후 미분양 설명은 완전하다. 146쪽 ㅂ 장 시작 장식이 이미지 후보에 포함된 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 145,
+      "source_book_page": 127
+    },
+    {
+      "term": "배당할인모형",
+      "status": "검증 통과",
+      "finding": "150→151쪽 연결과 P0=D1/(r−g)가 원본의 선형 표기 그대로 남아 있다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 150,
+      "source_book_page": 132
+    },
+    {
+      "term": "보완자본(Tier 2)",
+      "status": "검증 통과",
+      "finding": "자기자본=기본자본+보완자본, 5년, 1.25%·0.6% 조건이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 155,
+      "source_book_page": 137
+    },
+    {
+      "term": "본원소득",
+      "status": "검증 통과",
+      "finding": "본원소득=피용자보수+영업잉여+순생산및수입세+순수재산소득이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 158,
+      "source_book_page": 140
+    },
+    {
+      "term": "본원통화",
+      "status": "검증 통과",
+      "finding": "민간보유현금과 지급준비금의 설명 및 통화량=통화승수×본원통화가 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 159,
+      "source_book_page": 141
+    },
+    {
+      "term": "부채비율",
+      "status": "검증 통과",
+      "finding": "[(유동부채+비유동부채)/자기자본]×100이 원본대로 유지됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 163,
+      "source_book_page": 145
+    },
+    {
+      "term": "빅맥지수",
+      "status": "검증 통과",
+      "finding": "5,500원/5.69달러, 967원/달러, 1,350원/달러 및 약28%의 설명과 페이지 연결이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 172,
+      "source_book_page": 154
+    },
+    {
+      "term": "빈일자리율",
+      "status": "검증 통과",
+      "finding": "정의는 원본에서도 두 줄로 짧으며 채용가능 시점·비율·공표기관의 설명이 모두 있다. 174쪽 ㅅ 장 장식이 이미지 오탐이며 짧다는 이유로 누락으로 볼 수 없다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive",
+        "short_definition_confirmed_complete"
+      ],
+      "source_pdf_page": 173,
+      "source_book_page": 155
+    },
+    {
+      "term": "생산확산지수",
+      "status": "추출 오류",
+      "finding": "원본은 [증가 업종수+(보합 업종수×0.5)]/전체 업종수×100이다. JSON은 ×100을 등호보다 앞에 두고 분수선을 잃었다. 주석의 −0.05%<증감률<0.05%는 보존됐다.",
+      "finding_codes": [
+        "fraction_structure_lost"
+      ],
+      "source_pdf_page": 184,
+      "source_book_page": 166
+    },
+    {
+      "term": "서킷브레이커",
+      "status": "추출 오류",
+      "finding": "8%/15%/20%, 추가1%, 20분, 당일 장종료 및 두 주석은 모두 있다. 그러나 첫 행의 1단계가 내용 뒤에 오고 2·3단계의 줄들이 행 경계 없이 섞인다. 단계−발동조건−조치의 셀 대응을 보장할 수 없는 구조 손실이다.",
+      "finding_codes": [
+        "table_cell_relationships_lost"
+      ],
+      "source_pdf_page": 186,
+      "source_book_page": 168
+    },
+    {
+      "term": "성장기여도",
+      "status": "검증 통과",
+      "finding": "X1/Xn의 1·n 첨자가 독립 추출에서는 뒤로 이동한다. JSON은 X1·Xn·Σ의 읽기 순서를 유지하고 두 성장기여도 식의 /·×100 및 수치를 보존한다. 첨자 서식 소실과 실질 문자 누락을 구분했다.",
+      "finding_codes": [
+        "independent_engine_order_difference_only"
+      ],
+      "source_pdf_page": 190,
+      "source_book_page": 172
+    },
+    {
+      "term": "소득교역조건지수",
+      "status": "검증 통과",
+      "finding": "(수출물가지수/수입물가지수)×수출물량지수와 118.27·18.27% 예시가 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 193,
+      "source_book_page": 175
+    },
+    {
+      "term": "소비자동향지수(CSI)",
+      "status": "추출 오류",
+      "finding": "원본의 가중합 분자와 전체 응답 가구 수 분모가 분수인데 JSON에선 분자/CSI=/×100+100/분모로 흩어진다. 1.0·0.5와 부호들은 남아 있으나 나눗셈 구조가 전달되지 않는다.",
+      "finding_codes": [
+        "fraction_structure_lost"
+      ],
+      "source_pdf_page": 195,
+      "source_book_page": 177
+    },
+    {
+      "term": "순안정자금조달비율",
+      "status": "검증 통과",
+      "finding": "NSFR의 가용/필요 안정자금 비율, ASF·RSF 가중치와 ×100, 203→204쪽 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 203,
+      "source_book_page": 185
+    },
+    {
+      "term": "스왑레이트",
+      "status": "검증 통과",
+      "finding": "(선물환율−현물환율)/현물환율 및 매입/매도, sell/buy 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 207,
+      "source_book_page": 189
+    },
+    {
+      "term": "시뇨리지",
+      "status": "검증 통과",
+      "finding": "화폐시뇨리지의 액면가−제조비용 표현과 명목화폐 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 211,
+      "source_book_page": 193
+    },
+    {
+      "term": "신용창조",
+      "status": "검증 통과",
+      "finding": "100→90→81, 1,000 및 1000÷100=10의 예시와 217→218쪽 연결이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 217,
+      "source_book_page": 199
+    },
+    {
+      "term": "쌍순환 전략",
+      "status": "검증 통과",
+      "finding": "내수·외수 및 쌍순환 전략 설명은 완전하다. 226쪽 ㅇ 장 시작 장식이 이미지 후보에 포함된 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 225,
+      "source_book_page": 207
+    },
+    {
+      "term": "예상손실",
+      "status": "검증 통과",
+      "finding": "EAD×PD×LGD의 선형 곱셈과 각 약어 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 242,
+      "source_book_page": 224
+    },
+    {
+      "term": "외환건전성부담금제도",
+      "status": "검증 통과",
+      "finding": "부과대상 차감식·0.02~0.2%·0.1%, 250→251쪽 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 250,
+      "source_book_page": 232
+    },
+    {
+      "term": "요소비용 국민소득",
+      "status": "검증 통과",
+      "finding": "국민소득=시장가격 국민소득−생산및수입세+보조금=피용자보수+영업잉여가 254→255쪽에서 연결된다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 254,
+      "source_book_page": 236
+    },
+    {
+      "term": "유동비율",
+      "status": "검증 통과",
+      "finding": "유동자산/유동부채×100 식과 단기지급능력 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 260,
+      "source_book_page": 242
+    },
+    {
+      "term": "유동성커버리지비율",
+      "status": "검증 통과",
+      "finding": "고유동성자산/향후30일 순현금유출액×100과 현금유출액−현금유입액, 비율 이력이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 261,
+      "source_book_page": 243
+    },
+    {
+      "term": "입금이체",
+      "status": "검증 통과",
+      "finding": "입금이체의 지급지시·계좌 이동 설명은 완전하다. 278쪽 ㅈ 장 시작 장식이 이미지 후보에 포함된 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 277,
+      "source_book_page": 259
+    },
+    {
+      "term": "자기자본비율",
+      "status": "검증 통과",
+      "finding": "자기자본/총자본×100, 49.5%·58.8%·39.5%와 안정성 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 280,
+      "source_book_page": 262
+    },
+    {
+      "term": "전월세 전환율",
+      "status": "검증 통과",
+      "finding": "월세/(전세보증금−월세보증금)×100 및 ×12, 6.7%·0.55% 예시가 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 296,
+      "source_book_page": 278
+    },
+    {
+      "term": "제1차 통화조치",
+      "status": "검증 통과",
+      "finding": "1953년의 원(圓)→환(圜), 100圓→1圜, 각 화폐액면의 위치가 원본과 맞는다. 독립 추출에서 일부 한자가 이동한 형식 차이이고 JSON의 의미는 유지된다.",
+      "finding_codes": [
+        "independent_engine_order_difference_only"
+      ],
+      "source_pdf_page": 306,
+      "source_book_page": 288
+    },
+    {
+      "term": "제2차 통화조치",
+      "status": "검증 통과",
+      "finding": "1962년의 10圜→1원, 각 발행권종·연월일과 화폐단위 위치가 원본과 맞는다. 독립 추출 한자 순서 차이를 JSON 오류로 판정하지 않았다.",
+      "finding_codes": [
+        "independent_engine_order_difference_only"
+      ],
+      "source_pdf_page": 306,
+      "source_book_page": 288
+    },
+    {
+      "term": "제조업생산능력/가동률지수",
+      "status": "검증 통과",
+      "finding": "생산실적/생산능력×100과 생산·출하·재고의 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 307,
+      "source_book_page": 289
+    },
+    {
+      "term": "조세부담률",
+      "status": "검증 통과",
+      "finding": "국세+지방세와 사회보장기여금의 두 식에서 /경상GDP×100이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 308,
+      "source_book_page": 290
+    },
+    {
+      "term": "죄수의 딜레마",
+      "status": "추출 오류",
+      "finding": "네 보상쌍 (−1,−1),(1,−2),(−2,1),(0,0)과 두 용의자 이름은 모두 존재한다. 그러나 용의자Ⅱ가 표 첫머리로, 용의자Ⅰ가 첫 데이터 행 뒤로 이동해 병합 헤더/행/열 대응이 사라졌다. 문자가 같아도 구조 복구 없이 표를 정확히 재현할 수 없다.",
+      "finding_codes": [
+        "table_cell_relationships_lost"
+      ],
+      "source_pdf_page": 309,
+      "source_book_page": 291
+    },
+    {
+      "term": "지식재산생산물투자",
+      "status": "검증 통과",
+      "finding": "총고정자본형성(=투자)과 R&D·오락·문학·예술작품·소프트웨어·DB의 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 328,
+      "source_book_page": 310
+    },
+    {
+      "term": "집중도 지수(HHI)",
+      "status": "검증 통과",
+      "finding": "HHI의 1000/1800/100/50 포인트 조건과 본문은 완전하다. 333쪽 ㅊ 장 시작 장식이 이미지 후보에 포함된 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 332,
+      "source_book_page": 314
+    },
+    {
+      "term": "총부채상환비율(DTI)",
+      "status": "검증 통과",
+      "finding": "DTI의 연간원리금/소득×100, LTV와의 차이 및 339→340쪽 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 339,
+      "source_book_page": 321
+    },
+    {
+      "term": "총부채원리금상환비율(DSR)",
+      "status": "검증 통과",
+      "finding": "DSR의 연간원리금/연소득×100, 대출범위와 40% 조건이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 340,
+      "source_book_page": 322
+    },
+    {
+      "term": "총저축/총저축률/평균소비성향/평균저축성향",
+      "status": "수동 검토 필요",
+      "finding": "저축·소비율·평균소비/저축성향의 식과 342→343쪽 내용은 보존됐다. ** 주석 앞 U+200C/U+0007이 JSON에 남으며 원본 화면에서는 의미 글자가 아니다. 자동 삭제보다 원본/서비스용 데이터의 비가시문자 처리 정책 결정이 필요하다.",
+      "finding_codes": [
+        "invisible_control_characters_retained"
+      ],
+      "source_pdf_page": 342,
+      "source_book_page": 324
+    },
+    {
+      "term": "칩플레이션(Cheapflation)",
+      "status": "검증 통과",
+      "finding": "저가상품 가격상승 설명은 완전하다. 348쪽 ㅋ 장 시작 장식이 이미지 후보 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 347,
+      "source_book_page": 329
+    },
+    {
+      "term": "크라우드펀딩",
+      "status": "검증 통과",
+      "finding": "353→354쪽의 참여자·방식·분류 설명은 완전하다. 355쪽 ㅌ 장 시작 장식이 이미지 후보 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 353,
+      "source_book_page": 335
+    },
+    {
+      "term": "테일러 준칙(Taylor’s Rule)",
+      "status": "추출 오류",
+      "finding": "원본의 준칙 식은 i_t=r_t*+π_t+0.5(π_t−π_t*)+0.5y_t이고 변수 설명이 이어진다. JSON은 i_t=r_t를 설명 뒤로 보내고 *·첨자를 앞뒤로 흩뜨린다. 또한 π 다섯 곳이 U+F0BC 전용영역 문자로 저장되어 원본 글꼴 없이 π라는 의미를 전달하지 못한다. 수치0.5는 남지만 식/변수 인코딩의 실제 오류다.",
+      "finding_codes": [
+        "math_token_order_changed",
+        "pi_encoded_as_private_use_character"
+      ],
+      "source_pdf_page": 357,
+      "source_book_page": 339
+    },
+    {
+      "term": "통화스왑",
+      "status": "검증 통과",
+      "finding": "360쪽의 1,200원×1천만달러 교환 예시와 통화스왑 설명이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 360,
+      "source_book_page": 342
+    },
+    {
+      "term": "통화승수",
+      "status": "검증 통과",
+      "finding": "M=RB×k, k=1/{c+(1−c)r}와 2025년 수치·배수가 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 360,
+      "source_book_page": 342
+    },
+    {
+      "term": "투자율",
+      "status": "검증 통과",
+      "finding": "총저축률=총투자율=국내총투자율+국외투자율의 선형 등식이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 368,
+      "source_book_page": 350
+    },
+    {
+      "term": "특별인출권(SDR)",
+      "status": "검증 통과",
+      "finding": "1SDR=1.2635달러, 0.888671그램·1/35온스 등 수치와 369→370쪽 연결이 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 369,
+      "source_book_page": 351
+    },
+    {
+      "term": "특수목적기구(SPV)",
+      "status": "검증 통과",
+      "finding": "370→371쪽의 SPV/SPC 및 유동화 설명은 완전하다. 372쪽 ㅍ 장 시작 장식이 이미지 후보 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 370,
+      "source_book_page": 352
+    },
+    {
+      "term": "필립스곡선",
+      "status": "검증 통과",
+      "finding": "필립스곡선의 역관계·이동 설명은 원본에서도 본문으로만 제공된다. 383쪽 ㅎ 장 시작 장식은 곡선 도해가 아니므로 이미지 누락 오류가 아니다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 382,
+      "source_book_page": 364
+    },
+    {
+      "term": "한계비용",
+      "status": "수동 검토 필요",
+      "finding": "10,080원과 10,000원 사이의 원본 차감기호가 JSON에는 U+00AD(SOFT HYPHEN)로 들어 있다. pdfminer에서는 이 문자가 빠지며 렌더러에 따라 보이지 않을 수 있다. 수치는 보존되지만 연산자 표시 위험이 있으므로 실제 서비스 표시/검색 전 확인이 필요하다. 현재 단계에서 수치 누락이나 렌더링 실패를 확정하지 않았다.",
+      "finding_codes": [
+        "soft_hyphen_used_for_subtraction"
+      ],
+      "source_pdf_page": 383,
+      "source_book_page": 365
+    },
+    {
+      "term": "현시비교우위지수(RCA)",
+      "status": "검증 통과",
+      "finding": "RCAij=(Xij/Xit)/(Xwj/Xwt), 네 변수 설명과 3.5배 예시가 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 388,
+      "source_book_page": 370
+    },
+    {
+      "term": "후행종합지수",
+      "status": "검증 통과",
+      "finding": "후행종합지수 구성지표 설명은 완전하다. 401쪽 ABC 장 시작 장식이 이미지 후보에 포함된 오탐이다.",
+      "finding_codes": [
+        "chapter_decoration_false_positive"
+      ],
+      "source_pdf_page": 400,
+      "source_book_page": 382
+    },
+    {
+      "term": "BIS 자기자본비율",
+      "status": "추출 오류",
+      "finding": "두 표의 4.5%·6%·8.0% 및 9.0%·10.5%·12.5%와 CET1/AT1/Tier2/완충자본 이름은 남아 있다. 병합 셀과 누적 비율의 대응이 줄 순서로 풀려 어느 자본범주에 어느 최저비율을 적용하는지 구조적으로 보장되지 않는다. 402→403쪽 표 구조 손실이다.",
+      "finding_codes": [
+        "table_cell_relationships_lost"
+      ],
+      "source_pdf_page": 402,
+      "source_book_page": 384
+    },
+    {
+      "term": "EC방식",
+      "status": "검증 통과",
+      "finding": "MV=PY, V=PY/M, dM/M=dY/Y+dP/P−dV/V와 3%+1%−(−5%)=9% 예시가 보존됐다.",
+      "finding_codes": [
+        "linear_text_content_preserved"
+      ],
+      "source_pdf_page": 406,
+      "source_book_page": 388
+    },
+    {
+      "term": "만기수익률",
+      "status": "검증 통과",
+      "finding": "원본 정의도 두 줄이며 만기까지 보유할 때 예상 연간수익률이라는 설명 전체와 연관어 이표채가 있다. 길이 경고는 정상 짧은 정의의 오탐이다.",
+      "finding_codes": [
+        "short_definition_confirmed_complete"
+      ],
+      "source_pdf_page": 134,
+      "source_book_page": 116
+    },
+    {
+      "term": "모기지대출",
+      "status": "검증 통과",
+      "finding": "원본 정의도 두 줄이며 주택·부동산 담보의 장기대출이라는 설명 전체와 두 연관어가 있다. 길이 경고는 정상 짧은 정의의 오탐이다.",
+      "finding_codes": [
+        "short_definition_confirmed_complete"
+      ],
+      "source_pdf_page": 138,
+      "source_book_page": 120
+    }
+  ],
+  "supplementary": {
+    "term": "IFRS17",
+    "source_pdf_page": 413,
+    "source_book_page": 395,
+    "finding": "전체789개 비가시문자 기계 검사에서 U+200B 발견. 기존84개 밖이며 이번 상세 상태분류에 포함하지 않음. 삭제/수정하지 않았고 후속 점검 후보로만 기록함"
+  },
+  "original_records_sha256": {
+    "가계부실위험지수(HDRI)": "ba6fc46ab67512b24a4cc09c56a2a65c03aaa6196e9d637a710d14270903b1d7",
+    "가계수지": "cbbf37c9f4a9606ff28b90862f4aa367bfc38496125dd0a271a04fa394f9b03b",
+    "가계순저축률": "a5c16a810ce97c833c6c5941458f3d738bed0b7e2460c5a0f6e7f2a75170daca",
+    "가계신용통계": "42245a747b5aab38ff6de8bb9d936d13a10825c7c532b407d4fcc95d41423aee",
+    "가계처분가능소득": "072ef26ded8f6df246fef455ba4eaed4a30d8f54bc57a911d61838e86875541b",
+    "가교은행": "7cb89a62e8c6ee756d8e995c924913d8ddc442c11dd2b7a31a6463216ad1bb63",
+    "가산금리": "2af3545ae2a42fdd5aca0d8e74e7d336f0abff2db0decb4d0f312f38dc364d36",
+    "가상자산": "39dd4a56fe0220db8fa8b24ab2f5ffe0fbdb5e114893d17309e109e4338bcd07",
+    "가상자산공개(ICO)": "6a67ca93c91d98436981a165ec3b806b44f4a895e61b63f1b9a74ed261d4d5b6",
+    "간접금융/직접금융": "0b306852875e401f11b008cf0392e5c9f94184494a20bb2baa4eb7db0a7f17b5",
+    "간접세/직접세": "a14b4a829e27e59729861759f952907e7587df8c5fa116bf70c488067e94310e",
+    "간편 송금": "9812f84dc853f907e06854ce9b3a15022ca1925fa2c9d91ab7a2fbc19121dff6",
+    "감독자협의회(Supervisory College)": "e424caaef0b5256b75f6909bef93fbef3d7512e9c3f62dbd9f1addbe8f059d2e",
+    "갑기금(Capital A)": "554653414f243ff59274cd9790bd37c6f9b461e25b2f93df9936d6a1eed6180e",
+    "거래정보저장소": "ef7a822986dc70caf0dc12bb2e682bf81baf64b9b4b431f1bf72b676f160530b",
+    "거시건전성 정책": "b408a6c750f4fc72ae7938bc4a9dc61ba0c02ccef9615ab19c6443adf7484ffd",
+    "거액익스포저 규제": "78852c9935b5d70016b60889e7c61922bc422adba07ade1db528d5f1f2fdcd1d",
+    "거액지급시스템": "a717b0cf53de64e43b3c805c189d6e78d0fddb6bbb1fa459543ecf7670849534",
+    "결제": "69f323b15f7db599482bf8b18db33f974eb817937676de6ed3784d2acfef6b90",
+    "결제리스크": "3399e673d0e6dd766948f82676a196ff310ba580779ddc9ff521796fdc6d4046",
+    "결제부족자금 공동분담제": "29a360e39615389ba8c12d905cf90f199d971a398ce61c59fd8e6bc69040f4c8",
+    "결제완결성": "789251d14b36005b6c2691a858b070cd62e0adfbded15cd6d9b3c2e1359d00ad",
+    "겸업주의/전업주의": "17595e1390cb3919172736f580371fc0357b4db9be1ca549dac30f439bead2e8",
+    "경기": "c9fca8d6b95ccaa6c411cf83f46e89822c2e26fa016019ddb2cff08d4f96de09",
+    "경기순응성": "e5d6f501e4dc75f8da1348d768d9503c2eaac76b9968bab486d7cf72a6c94bce",
+    "경기조절정책/경제안정화정책": "a882505856337f8c78eeffe3484985831bc5feaed8a616853ebd051ad13ad50d",
+    "경기종합지수": "393abba07139ed1d5941e8b60899c55315feb7caeb2f5575c5f690c082ab233d",
+    "경상수지": "a30e21793b0a06374d9a9e92e15e4e7ff562e72fbed8627632392e48b83a27aa",
+    "경영실태평가/은행경영실태 평가등급제도": "b8980d8b4df7a2ee285d7b79d21592190832f3afff188d3d73800a4448b88384",
+    "경제 서프라이즈 지수": "de4be8db138b8e10d0e644432f145e43087f195c4ae18488f4dc4d802ea92bf4",
+    "경제성장률": "1e56c80ab3a3150d87b7f13ddd5a3139a97cca5d06fa707bf375327f1a548df1",
+    "경제심리지수": "8eba19effd53bf29576381e91a60221caf986ece0ed1f98675d4472dfb4648fb",
+    "경제전망보고서": "72905bdaf20a391787f0ba3a3e6271996b6c06c5fcffe36712db67766b701932",
+    "경제협력개발기구(OECD)": "a67b7956c4a1342f64ab63394463bee757caf791500891896a3831f9385eadad",
+    "경제활동인구/비경제활동인구/경제활동참가율": "70d04d20e4e7cea300c25472b9f21ace32dca8a89c0c8b6a94ff7c16ebd5a511",
+    "경제후생지표": "6ad904826def1610d81636e27bdfb577e5a732915429aa6441676d43d7686e3f",
+    "경직적 물가지수": "c832a1487b82c0fd19ca29d4c103e82cc274cb3f51bcac99903b35ce27399316",
+    "계절변동조정시계열": "87daff36dc51820da9ea35b12bdd0c4332e72fd262b3ddad726e1a1c42f4f8ed",
+    "계좌대체": "a6e00744620f3dbcf7dfcab623091be7c9717c2c50ead6c05fa734ee5cb58f9c",
+    "고객확인절차(KYC)": "88e234a5ba175b1b03ee8b62b1fdfcf8241706874937c3eb407b9ad4b3810902",
+    "고용률": "c4951052b196feb60fa90db979d222c19640535b3059cb26157de59308355100",
+    "고용보조지표": "9369bebc6c6d0400eb817b1f3a32bfb8e8babbae6e8871537113155337d941f3",
+    "고용유발효과/취업유발효과": "680f971876b3802b808641bdfd218621980a6c461b040f037a94968633bb7666",
+    "고정금리": "9bd78737542311213f7aaf54efd8e623a7be33d29df0de8d6a38f64504c2058b",
+    "고정금리부채권(SB)": "d4e0c31fe62d8ce412811f8a58a821e85ed63c2150bd1a8038dcf92de8421242",
+    "고정이하여신비율": "0ad9b3fb7b95c45a322dc2090ddc48861dbb7a7b47f51c6aebdb0400b46576d2",
+    "고정자본소모": "176668bf872cc13eee33fb6ca1f212c3e3a8585518b9f40652ab8098869f4c86",
+    "고정환율제도/자유변동환율제도": "a1570c0422cf68df700f83ee7185472a539a37c01bd15882c53f3ffbcb01e846",
+    "고통지수": "641b155129e4a03e8ca829e24d4a6988b959f92211cc4e1af8baf70f31ecaa6e",
+    "골디락스경제": "fce2b7317446afacb1e915bc6a3fb706ef309c9ee9d282cc008ffef4d6902510",
+    "공개시장운영": "d9fc2e86405015d806ec1583efef27d860b037421ebbd1ea65380bf8a6f5183f",
+    "공공재": "18358a5d7bc7d9a9304ece754633ef098be7b12890229f2ca0f77d90058952ae",
+    "공급병목": "c15976609cc5e4db8f209c243026f30e5a2b02f1d8c7c9f71e391701c56a6588",
+    "공급사용표(SUT)": "b5691cfcc1c36657bc9c6817747b8ea5d50f36854e3de410ee56733514f9fc17",
+    "공급탄력성": "c6b8f68bb463679c6f273ec1717abadcb17e0329989145f0ff6eeb9fe680e7e4",
+    "공동부유": "466cf17a55eca3765813c1ae6ec22f001b3b5c236a97f80eb4de8cb45f03c06b",
+    "공매도": "133e561e0981fa4f7eb27c21179fd7f15830142525642f6a4c07a6195c1024ed",
+    "관리변동환율제도": "a967d439a10db70120100996d0530abbce8139f5604e3d205796e9f7cc5d1bdd",
+    "관리통화제도": "7518da42180a0c9857fa717ec884f424e7829d656a20f0ef1866abab965a0097",
+    "광의통화(M2)": "1ae775ead86dd464b6d36f3ebb38d8bc0987897f00cbaa2cc1a7c434ea01a9ed",
+    "교환사채(EB)": "f92f5106ae7a305e864b701ee2e7c598f005efe786784afb3d1c3404aabd771c",
+    "교환성 통화": "d25b4b77d1c2c1d3cd1996e049b2484fbe2aa007b0ba0cfcb30c943a8e5c03b5",
+    "구독경제": "19e8c68d7d9f13140431e4f98116d98a0db9fcb27ceaeabd5cdfd53b65c225d3",
+    "구매력평가 환율": "afae5ebc3ee5d2031cc5903ac4693cbff2b4673c73d2e4ff1c8a769cbfc06b07",
+    "구인배수": "38e2ae86b6061dbf5849fdd56021e1cd25d378ea44c9a2d638a297819cd64507",
+    "국가경쟁력": "8df45243bb39ec6e38c20d9d348f5291ddcfeb480eee9754a1bb944897a792f1",
+    "국가신용등급": "43a5971dba9c08d1bf3fbadc8e235792a668c9beb203e8941ef0fff7e87deb5c",
+    "국가채무": "892b1582d5656316892d3e0682f268ff758d812d4ecdd2d485b9ed1383cdf7b2",
+    "국고금 실시간 전자이체": "9808dd7f96e168955df2cc1855d1fb25300629a6f416101c96327ea63884f14b",
+    "국고대리점": "c069f8eb3cd4e0c9a4f974097b4a9aee0fc45afa321d1e1a59653cf087e81e8a",
+    "국고수표": "d149ec99048c48d21b0f071156275e1cfd67b48518a4f666effea7ffedfa3ef4",
+    "국고전산망": "dac651d90f6e29185bdcd8ccac50ee8f9ed34fdae487010025df20677edbaf57",
+    "국내공급물가지수": "40af622af8d98b0bf5616946964c2d0bbd94dc9519f006dc656ac6e3461c9fcc",
+    "국내총생산(GDP)": "0e234b2cd40fb1550a705127554a9c6b5b33ec90c9722a02f704a99723a35991",
+    "국내총투자율": "a262c16bb0488e01846803ce0eb43eff949e527e8669422a7d54c530d901be1c",
+    "국민계정체계(SNA)": "98750e18e3e696f96b650d60d42c6dc795ea6c6b9c5feb4fc14455229d124082",
+    "국민대차대조표": "8f273f1e1f280fcba2f67259de8210aa34071af36ac0859b39fc44529a04e883",
+    "국민부담률": "c2334390ab06da1f9d764e4f272705e20f8411ad33b9b61a60856c2b9c73861b",
+    "국민소득": "b2a84f48e4d4afbf8d6f347e55ce8f7708a3bbe8eb6cde35fe7b8956edc809c1",
+    "국민소득 3면 등가의 법칙": "efa8d1aa4a691fdb18fb5ebf2fe8056ac112fcb8e454ad9165822ab779dde871",
+    "국민연금": "39c31f2e44fff98585644148e59a2f06d709562893540cb25d2721b65b1c8df6",
+    "국민처분가능소득(NDI)/국민총처분가능소득(GNDI)": "3ebae2978ccaabe1d8da30a37dc7b9c13649050bf3a4b04093d9c1eaf1ef4dab",
+    "국민총소득(GNI)": "41fec31f3805341c1f057002d2ce9f42c12fea1eb27eb27a40715509fd4881fe",
+    "국부펀드": "014e8d66a507c47c4648b6b8065be6752a9f4cbb34f437586b2536941d5f78ae",
+    "국외순수취경상이전": "6791bdd0c8ae3be9ee72af02842f6dcd68fa6ccf77ee44552d670d4be2c7bb95",
+    "국외순수취요소소득": "550725bba6b9bbcb9d89fbebead1752a71372d7d361fbb054e39e24c230a9253",
+    "국외저축": "eef89a2461b39f5077c9cd01c068c492e9df15d7bb432cddaa2beb2364563a50",
+    "국외투자율": "2f9b055dfaf2b2263ac55557a9891789be996c1148b2f556ee2d1e55e43e5f64",
+    "국제결제은행(BIS)": "8444db51c30b0eb801200a121a058a219c503810a077f5f3f66d9e3a9841a883",
+    "국제금융시장": "a410fd5b974e9cd48aca0b2e668c216256262a394efb55bcee46ca3c0261d3d6",
+    "국제금융중심지": "215fe67fd160e2ebecd1d846af588f9dd4849057ccb55d5e541da485f094f2bc",
+    "국제산업연관표": "9b0997182cf9f3ad9b8a94ff85dcf0dd596d629bc9e6e0224680cfce521a8274",
+    "국제수지(BOP)": "e4bcf7b2630d5d4df53026d4624f2665b09039f9a343291f2c600e5b5e1c308d",
+    "국제수지표": "b92cd5c46a7f7d0316f8b4daa944a0544e798728d73786b3a98a1a91dc994d2b",
+    "국제원유가격": "bed14820be7d8da2459003e4f137dfced2215ce2b40f2044a962c383f0643862",
+    "국제증권감독기구(IOSCO)": "9230a5bb5a05ae8ae9be13e39f13ccd8da1cd84309f04408ede1ccb200e7e504",
+    "국제통화기금(IMF)": "50e16b529f9928f7795c3045e27bc2ff7874c125c741e5402c752c2f4adee829",
+    "국제통화시장(IMM)": "e846af5c3d188bde0b4d1984809726fad98b4ba711fd411cbcd592b50a015544",
+    "국제투자대조표(IIP)": "397edd1444c65b563543dc12b591bed21ed70bebe086e7988ad60b71e79f817f",
+    "국제회계기준": "a3fead24d5eb4a5414dcb90ef014a5aa31336cd596c891a2b67efa091abe656b",
+    "국채": "dc8d26ee9eeeb7739c238740ce9264706497f076e7bc3020fc3061422dd0af46",
+    "국채선물": "650da03be25089b692390f2bb1c937d9109772f97576fa87487337ec19933b06",
+    "규모의 경제": "19eb6f03f894a1427daa7e9395eaa64a375bb7fc3cf37620e78385b60bf69db0",
+    "규제 샌드박스": "7d652bfe6131cd9ae0afa115e07aad510a411fa56aaeb7e6c75fc2d36b1ac8a8",
+    "그램-리치-블라일리법": "bba60cb09656aa7946f76cae0d894bafc9923802fd3bec348fa8b9c001956414",
+    "그린본드": "05844ebee30f5bffd64c772b2c9905559a59f6583364a406c0a1d9d251faca3d",
+    "그림자금융/비은행금융중개(NBFI)": "98334b17b57d5e05987759a0f9ef2e640865ff58781358d1428fef8d463e3114",
+    "근원인플레이션율": "0850327d65ac7bd3848442b867d4a18db22dbf5c4ee5bf5c1c3ca45243295b2d",
+    "글래스-스티걸법": "c224927d3b1d25d2285aab0e13d7ea27e5ab8cf01936ef65c75bf161dfb65f9e",
+    "글로벌 가치사슬(GVC)": "b02ca68229cd765ef11ad327a95f147694cd1dea4211b3d6f1fc347998610aef",
+    "글로벌 공급망 압력 지수": "8609736e3ffc3bc3603c22a6fc89b7baa4e9b32a63d7efa937643ccddc497b61",
+    "글로벌금융안전망": "350552d5d801fccf37ad95335f639778d47ab7c4434d605e1f8387a74ababbf6",
+    "글로벌 금융위기": "ff68482f18eacdfd90c2f55fa73aaa66a3891e5f1e8cbfc8e5b3a024e407bf0e",
+    "금리선물": "db19e9b9168548773cde5e5ea4c9d7d5b0fe9e2299becb64494b3fcfd5b055fd",
+    "금리스왑": "8d95eb06d4abbba2041ef6797731116c1ef5a74fdd47327ad2ca83440919cbde",
+    "금리자유화": "e11f6f4c1e4c48f433141b5fa1a5720d042df4bafb254f80ebe70a0102ccf935",
+    "금리평가이론": "497a9fef09ef0be89ba569e6ce3dd895290a2076168cef541bcd24fa461b5c28",
+    "금본위제": "4a4e5eabb4157d07d3d5510fecb9dfe72d9aaa693703ea458b0085dedaf8ca23",
+    "금산분리": "edffee8381663d015efa6592aacc0bfcbafc4b366999495f51b47c6b06ffac65",
+    "금융EDI": "fa53700a026c1c6fd2d001bc775f181bf97f5c7c8084424cc250c441475dd8c7",
+    "금융공황": "d0e52d4306af8dbc0443d2e2eb9750101e9640ce9b84e3fa78ab109809f6e9ee",
+    "금융불안지수(FSI)": "fa35cd08b38f465ebf005d9f62df198649045b34fe2c41ac0a4a2b132526abbf",
+    "금융사이클": "a832bd6b5857600d53507249d25c4ffb797e2f5152c84237b946fa06129efaf4",
+    "금융상황지수(FCI)": "cea1852086eac0d56428eef37fbe9e22018b0d4376e1e9ab6bfab23f5dc2a36a",
+    "금융시스템 상호연계성": "ecb5a84e23102dfc8a822f269ab48c857c16890f192be84999af6e1513149bb4",
+    "금융시장인프라": "ba08267400dfe3160bf529157274191402bc3896234fd3d284fd07988bfe11ed",
+    "금융안정": "a0ba9ab3bcf8196c32a97a7662fc8c03bb9b0e54b34a82ad4f3521125d69fd23",
+    "금융안정위원회(FSB)": "1c425e6d58874dcd8393cb17f5ad56955ca9373f507e1f59c5c6c1081cf363d9",
+    "금융연관비율(골드스미스비율)": "b14811e124cf620d1a0b30ebcc7ef322c2238813e70dbc700d4c5b552a68a6db",
+    "금융의 증권화": "3a6f1c179591fb827a93cd384fb9ae4b587ac3e076a845404c8ceb0a1fba9576",
+    "금융의 탈중개화": "b8bb316ad4bc237ef94f6529c686612fbbd2394caa9dfebc179afd5bf2f8ede5",
+    "금융의 탈집중화": "9bd09b4e381aadf99de0410b96ade6e4eb8a835c798813c57da8d02bb3042c87",
+    "금융이해력": "71904d576fb594b98121d8387fee279b36d2d684c7aed805847fcd32599405fd",
+    "금융제도": "0b0d039cc1caf1057d334ad5941777f84d06a4344732bf83b7935744e076b1b6",
+    "금융중개지원대출제도": "0386efe93a39cb6d6ba7969c3ba854df3647dce9c01293e2c74c3c779d1777ba",
+    "금융지주회사": "2bb11297cd79c1c31e60a5394f0e5cd2c33437afc551053f1738e6fd67ea85f8",
+    "금융채": "de52a52e48a67f1ea0da8b98554ac95051aac02c909974ba3525247abfb2ff4a",
+    "금융취약성지수(FVI)": "e720b35d28b6e0f104178105334e437c6a239ce07f063030e8cce45c54cb988a",
+    "금융통화위원회": "38c5ac9465955f1521a14ea15fec352f01451389543e60c5c248ad663d533ac5",
+    "금융 하부구조": "48241ee55a2fee8737a18fadd1982d775add71abe2ca1fc72c41f14db5c52b2d",
+    "금전신탁": "3865c875369ff91b6f1aedb79e201a30e6578ad5e990aec661ba1706d6fcc8a9",
+    "기념화폐": "646d88e2fa93dc14766b27af6137b79fac3e698e8e27a25c38638f5a90c8d428",
+    "기대인플레이션": "1f042201bdf35d0eca55fbd96ca1df3aeaab29fd42509440344f0f41b6ad03b3",
+    "기본자본(Tier 1)": "6542500dcdffc67055becb1cfd213106a59c330893345fbeed4f5fd2338f2588",
+    "기업간(B2B) 지급시스템": "33d0f5352129a8aeffc1955526d06cbe9782b932f62c858af520960b49b47aa1",
+    "기업·개인간(B2C) 지급결제시스템": "662d1ccbbb8c27243ef92be874fb53b1cf3401005eb9d9da66b20727f71e72ed",
+    "기업경기실사지수(BSI)": "22f762a66ffab39b2b46a2d21aff72d24cebab69cca0e7fe576aa5e04d11d943",
+    "기업공개": "521c40bf3b30bbd3ccfa7fe89e027d223149a2393a92b7779adfb4aa036fd10a",
+    "기업분할(물적분할, 인적분할)": "966e0d7ff360feacc0f0f32a42ccecfde33f2d13f679a2b6f36acbde60e00444",
+    "기업심리지수(CBSI)": "f78fea4ff359fdce74013a05c64e4d0e07a885f1ec07d92b71c1d4f66cb994d8",
+    "기업어음(CP)": "98f7751a667d2d7836a79fa64bf76026e11039353d54719379c70a20dc5bdf86",
+    "기업회생절차": "de730b509f77a73eeceb4687751a585ca87138df7cd0d933c50a707a6296da93",
+    "기저효과": "1d54109e448e38a532b78c2703d0eab5356c3f5d7393a69e588e2f1ef2f8b808",
+    "기준금리": "02321e2d781ae0d9017d0922b7647342e7c3777bc5015284b96893dec0b8c54f",
+    "기준순환일": "8ba69970e9d92b20060c916edb33509c8107a532d8deed912c8e0b1b2677a4e0",
+    "기준환율": "627e0d17196f63075690691eee25b8b4380c613230a135bf3589790e4ef8c5c5",
+    "기초가격": "5634d026a47c142f58481a2aefd9689f74ed8a7b30b173ca95cb83b3556eceb6",
+    "기축통화": "bc3e13b9be35e1d194bffc5d670cfb505d6deaebc6c82ba7dcb2e780c5721432",
+    "기타기본자본(Additional Tier 1)": "9dc3779c21169ae233bd2cff65b22cdb01b0748b3dd8df441555a0fc9e86fe57",
+    "기펜재": "4bc2f98ac94ad2753c27892fce3714a61290cf0ff3114b16a8e9bd4be4e26978",
+    "기회비용": "6f8b07a6fd31481d41126c6c0e30560bdd77e669fee89dcf48f375d2ebb6d4ed",
+    "기후테크": "15c355827c004d1dfb3efe4f399e2937e56b70211b5a3eb229ab32bd36ca603a",
+    "긴급수입제한조치": "e1fddbb6ad1160e343ce5da564f2f0e13cc364fa31723068393627215372ed0c",
+    "긴축정책": "0f60be285eba4e4d2fbf54bc054a3404b2dc0b9bc678bfbe0c39b479dc47571a",
+    "꼬리위험": "16518abad03344978f4d536e75161e38a6de0ae18b6215aee596a8af13985192",
+    "낙수효과": "bb373998ba90656e4e658625db32b8257d911d1a0583cf2a21070bbe9fc58f88",
+    "낙인효과": "66f676a34995a8e45267f24e81fb60f09bc7faf98238c584377f8db072b5447c",
+    "난외거래": "9273552bee298994b3bebdf60a4ba3ef382c79f6569886ba3afa32256ba78d63",
+    "납부자자동이체": "67274f9937bd0248ae61fd8c0d4555e10019596e5534a2287b50b025e46e973c",
+    "내국신용장": "aed5cf907c5a330ec555665eead31e8e5325d72b66269225e5d2574c029b1101",
+    "내부등급법": "674f71e728676ab55f72010b6fa28060d4746a0de90bd3852f7408d72695227b",
+    "내부자금": "a9ebdf9f97e66568704a6795d9f10d6863c5e6a595f0f036dd317354a18e62f7",
+    "노동생산성/노동생산성지수": "204e1eaa7937676d5911ae6f39fa20c0d028657d515f2348bbd54b98a3c98ebe",
+    "노동시장 긴장도": "7c086b78d240d3da15ce36ad54f08e10e7d85ed2b7773e170f5bf1290613a438",
+    "녹색GDP": "55d62336dd1e2aa9052de16f7300836cfd4eb713cfda4d04942923c473ea8ddf",
+    "녹색기후기금(GCF)": "787f5ed749cd648d555b9fa81ff1039d597bd3f267850ab7160a391b7f819246",
+    "뉴스심리지수(NSI)": "1c1a2d045ce7297bdb44b916063dcb02e4906dbf1961b3d39cd155f51fa636da",
+    "단기금융시장": "427a8fdba8fab6eba0b7da0e7af078828e406457ed2d6cd0d6065e413f8c8d70",
+    "단리/복리": "b03ecf19d52d6c4ca7e2de7c7c13bbc0aedf87df22b66f5eead7bcf996fb4a92",
+    "단위노동비용": "358e8c4733f3066695921d44de50e9d85fb30f8e828e66d7a46840f52b78baef",
+    "단일금리방식/복수금리방식": "40337a18f9ea4fa7aff119cb40fe37870ad83d64b20410df79080e24cdd5005d",
+    "담보인정비율(LTV)": "33f05a41c5adac98186fb0859d27145cd306c5c7b00158874ed5663a873cea83",
+    "당일결제/익일결제/익익일결제": "28208b35df950a4fe8b422493e5a2f0c4adb85a89ae444635b2849c207467a44",
+    "대기성 여수신제도": "9522d509bbbd5de5d34ff641b51304efd7576fb99ef73921393800c79ef83a24",
+    "대량지급": "1567d5433a4fd926d3aa74901a028e7a92a7f83e340e64ab9c75badb7dcc9605",
+    "대손충당금적립비율": "5d23f70d05adcd22ffeb8128e2ed46be44deeb1b06acf000e0143d49d4be7b78",
+    "대안정기": "a5b6b30523246d5cbb4f00553e6f638ab0f65b1c3ee69bbc72ab76d088c63213",
+    "대외의존도/수출입의존도/무역의존도": "1fc63161dee33733241528d294e5b3bd9ff7a0828751904328dc92e6efb08fd3",
+    "대외지급준비자산": "f23e208aab14e1920776dc958f13423cefe3c972dd56dc59ceab46d928b651b3",
+    "대체비용리스크": "9e5ffd30ecd36f2447786fffc81d47a7bba2e570181fc1e033d668428403a925",
+    "대체재": "1d862a7dc9e4e8f4c1d833c2c67978cc5858f835bcb02a343dec743f4178a114",
+    "대출금 출자전환": "bb9e9a3be8172428c67545b2978afa785f4f21991efa1cde154fc90c22c28a69",
+    "대출채권 분할매각": "9617608e181440dd4989b70e5ebf3815aab11a2ebfcf45096fff20d26a1b24d5",
+    "더블딥": "27fde61c69ea6bf4494481b89d3c5eb47e6ffcf4505b57650809d5b6286c375f",
+    "도덕적 해이": "7314b5c0dc1cc14a88a0e04839aa300065d9c622b92e6e002a6196b0199838a2",
+    "도드-프랭크법": "feb1ac16edd54886bcbc1eabfb05265c608ef220e1e5caa4077948d279daacb7",
+    "독점/과점": "deed7d58d87a5e637768a78fe9def9b0fc1cc710d714c6ed6f6443aa0726a76e",
+    "동남아시아국가연합(ASEAN)": "3e778d8cc41120b5022259daa63f0b94421d9ba4a1c796c042876aaef554b101",
+    "동남아시아국가연합+한·중·일(ASEAN+3)": "d40d9deb47f6e7459684e490f570b23a923b80d1278e1a2bd8e14a19277e104f",
+    "동남아시아중앙은행기구(SEACEN)": "45cc907bbb9e3af69a086221353383b86c217d76bc2aff7772ab53c6400c18cd",
+    "동아시아 외환위기": "00da348c52af76db546a358da7741ce74bd577aaf0e2caea256e71751b523f80",
+    "동아시아·태평양중앙은행기구(EMEAP)": "e95761f6dd864691db2a0435b0971e818c5e408fc1233a887eca3c40015e8c4b",
+    "동일인 신용공여한도제(동일인 여신한도제)": "8f381c44c1e5f45b684f781045a409a082db5ba40e3455efc76b8ec15fa176e7",
+    "동태적 대손충당금 제도": "f16903a3b30fc6277501daf1c14b56340136a9f35c127a4bdc8f2057c7072568",
+    "동행종합지수": "8ea87d8cfa4342dfe85b6c83ecaf3ea0067005f5b3296caf5aa080ac54a47626",
+    "듀레이션": "e2ff26851f7778ced5b6d22970877af783dcd5780e65f71e3ba53deb17f9beb1",
+    "등록발행": "8a422624828b010d90d519b6640d6ce44847f771fd85c53edc1b79b43dae5754",
+    "디레버리징": "89584878bf0037f26527ce70e4274b90dd883958d9fd14301d9d2bf1bf505aa5",
+    "디스인플레이션": "2d8f96e925d981d45fd303d0186b3ef12dd3d77590ec263943a1da3b02ebe132",
+    "디커플링/커플링": "3a44fff5ed7829991c2579f539921011129e40b06a809e75c7bbfe517a1db2c4",
+    "디플레이션": "696781f15871d8ada9a10c18947155a0bcbfea535e45184e065a98824a78dce6",
+    "래퍼곡선": "92652adfcb7bdbe0fcfeb32417645068632ca019bda4f1b6c7fd17862549c725",
+    "레그테크": "e5374ab697e7aa2d541b70272dce993d676f94c21fddc0fc1de6849ca26d31c2",
+    "레버리지비율/단순기본자본비율": "ae519ede32f88d37180ebe3a4f8fbd97138ceeff0bdf3e816f6b2bbb0c3f674a",
+    "레버리지 효과": "c2b59fde109ce0630cd653da59521a6852d78be67a73207c604cec12416ac595",
+    "로렌츠곡선": "97d9727e026659756cc3602f78a2d4aa2019a79ed2c12f5e908e489a9004448d",
+    "로보어드바이저": "ef9995424d0d0bdd6fb6d1533e6b2c990b1887d32125e270c0fa561446ae24bf",
+    "리디노미네이션": "dafd882a2734847cf1e530f877c1913cb8a2ca704e0fd6143fd4fdc39973f2b3",
+    "리쇼어링/니어쇼어링/프렌드쇼어링": "1867d61526d3a6eb16fe2ab6dd51a6c35f804c0ed75a5ead6e19936e480a2ff1",
+    "리스크 온(Risk On)/오프(Off)": "371bb8da68d5b8688da3cc6a1d812532d920d4c06076963cc8a5dfca597eca05",
+    "마러라고 합의": "5f3646f8673aa3613284c3f9d93fe0fd0a461958639ff68a6ba84335d45d76c4",
+    "마샬의 k": "80946e608387c62dc6d50b22a258957f2e237ad9ae9c54203010b28e1e3e5edb",
+    "마스트리히트조약": "3a257d5fa5b8d42cfaa6535597c7b09b0efb246410a864e176190a605d2a212a",
+    "마진콜": "a61e8ceb13ece9a78f495833b775886b9326f1986419822b6c4547c1f458147d",
+    "마찰적 실업": "10fbefad1fd4717f98c8b6be3ed0a2d75f8608c01a36062107f5e46e47780b8a",
+    "만기수익률": "0b647b061094d504583b01d2d2457ca879150cdef0d33d54f72bb88bd8eadebd",
+    "매매보호 서비스(Escrow)": "297c24b5a6f7fca97f0c9e2c262dffc5d73bd6d67c6ad7c1a32cc09d61f6db02",
+    "매몰비용": "2acf1e673f65d28f5852f21428dce82ad836e13a10fbaf6227bbaf9c87dbf9b0",
+    "매입외환/환가료": "8ba10413de89dd103741318d0c5e83fedb17abc6356f02601df799f7de33bfcf",
+    "매출액영업이익률": "30c6339ea070f9d8c1d91fb61dff1a5b3ca27613947e59b4198eaa8be87e85bb",
+    "머니마켓펀드(MMF)": "f266b4144e5fb56e56d8a9b6b6792624cdaa8983a228f05937904df654c8fc1d",
+    "명목GDP목표제": "21f805524a7e29663d00a6b56c996b025644f114f31b31fd42c78a8f12a67083",
+    "명목국내총생산/실질국내총생산": "13b68ee8f37236238aa3cb11757b7e5c0f862bd71facc5c39bb7e92b6561a5cc",
+    "명목금리/실질금리": "09c72b931c655145cf961776362964f79a8ea94a031bb0746d39cd842ae68b78",
+    "명목소득/실질소득": "dbf51a21620d6af1410225a932d3470b36ed1b5ae3ab0019151b5628f008c622",
+    "모기지대출": "309692177090cb47bc3acc4f91c876afbe9743b82fbdf96e58bd217d55f25dbb",
+    "모바일뱅킹": "827e9117440b2dc21562c25c6f51b62c940c9ada7553801fc60979fc20850ff9",
+    "모집": "001256e3f187bcf50cce427a2ce514c9415ece3df1f4e0b01699d596a10c2fe5",
+    "무디스": "e6327811386e56f7581527c9a71ec3a9bacc7eb6e576f4999c543ddd1b8c87cf",
+    "무역지수": "7f355e6c66044d12eb4a8d0f1fbcc61f88b3c3f0369a2465bf55dce8f918ce29",
+    "무위험지표금리(KOFR)": "080909684ade66d312a77fcb11e7606617731a08a13d82f274710302dd25e911",
+    "물가안정목표제": "8ef8dbf3b5fe37d9b11c849b93d0045ce8186c6cf19d7492427b36b545e22af6",
+    "물가지수": "9c35c3858837a3d429d61a6c4d6926b64884eb986ac23ce22f0e2e595942e4d2",
+    "뮤추얼펀드": "c54a5356c0e1f5ccd2b739c393f3038a289b3e6e22cfcb79dd09acee946b9d71",
+    "미국·멕시코·캐나다협정(USMCA)": "4f2aaf7ca2f5b4f89ec3684d520837153ead2e019952fe6f3aec4b16435afd41",
+    "미달러화지수": "fd775a9764591b2ff002e9539356118ef42f00d45c606af600ad4e796c89a7d7",
+    "미달러화페그제도": "9b901aad0e3e7ae8d37be88baca68b8bcb3420c0b6524b873232bfcc397db380",
+    "미발행화폐": "e3cf4378008930c628635922d09f6c1bcba52c78282268c58bf649703bc6e54d",
+    "미분양주택": "c20a250ca5c9fd41f2a4af4135a85f3f10f18fe248f4621fee2247a1ab7ad2ee",
+    "바이오인증": "757130c479dfb135fec21f708ae42834f2406a5a2664abac90b8b909dc2d2f45",
+    "바젤은행감독위원회/바젤위원회(BCBS)": "a21b18b46b9e43872e41a91b67eca1c38b93e589eab228f34658b6174429b9f2",
+    "반대매매": "ceaf65fad6d2f1d71e1669421d125dbf01e5ebdca52d2fe44d2e17aa3890e20c",
+    "발행시장": "70220acc90153b9a23b5d81de42f865c49238c9a81ac91350889f725298d5284",
+    "발행어음": "32a296a6474737c3fe54ed4addbfa6f437f1cfbf1a8597523c4d46a123ef71a9",
+    "발행중지화폐/유통정지화폐": "9bc86214194e5537af57effd7616cdad4b0dd5366364384cc50b8ff7ee0a2c8f",
+    "방카슈랑스": "3ce40ab46e9f7739ae726bdbcc74d8f8816ae54288ebc23937ffa865f44e24b4",
+    "배당할인모형": "e016786e4ce86e503fc13fae45eda002dcc899cda1f0f1aaf25065fb8e5b12de",
+    "밴드웨건효과": "13b60823f9fbb60e556bebb491003616dd8f3acfd0c6fb3d4f7ee728de78842d",
+    "뱅크런": "a191c43ff3e957c65a565ab936cce6a7f8a9e3173722316d73201417b4389370",
+    "범위의 경제": "5d1532a20491dcdd97e6429e863aac28823a6bbd09e5ca1426b8674923175e6c",
+    "법정화폐": "419972fe728326ff6c9b80764f6d2844999315c454a894326010ec67607aafda",
+    "베버리지곡선": "53fcf44c8a6598a4e135b9f5e4b9306b72c3f956be4d2b018719f0a2fc8805d9",
+    "베블런효과": "196dcdacbe0917a71f9c0ef3bb4f366412cf90ddc3a557919a872bc05dc33e3a",
+    "변동금리": "1daa09f14ed41d4b994561abcd3da7dd7b5a2a5e94eb278381feeebc2614e63f",
+    "변동금리부채권(FRN)": "bd898cc6c3486d42c8fa02402fc6ce62fbbe0f643f1e0cc86d3f9d60a9f875eb",
+    "보복소비": "4fa86a12f342a9e7094b33d8c04a2521ca4da514028e22f42fe16254c7b3ed3f",
+    "보완자본(Tier 2)": "55277a34c47f52366061bf11e595e3305676040ccd38f2ca0caad74fd519fc17",
+    "보완재": "e1ea9e9f24a5b3951656dd861205eded90f003b75842e7a0416ea0c610284738",
+    "보통주자본(Common Equity Tier 1)": "a07aaa569f55c6b79c4ed82759ab791536566a39df0e9d88111ba38261311bdf",
+    "보편관세": "b6cdb34695bd09fc0d7e0e3da90ac35de09c3199f12de730017834f7db651efa",
+    "보호무역주의": "e171fd26d6f0ecc8d71573fca4af2f151793637e7bebcccf84666a2b4a6d54f6",
+    "복수통화바스켓제도": "e6fdf6dd8a78fc64ed7157eb51c77ebb673b2e7dba4ad380139317ba9eef455a",
+    "본드포워드거래": "6bb55df1df2e3b7d2683b9bfb7908221481eef974d26c0aecc483b2b1ba65b6d",
+    "본원소득": "9aa8f52fc053da4c4918eeef0693dfb8e0f07e56667a9cbfb5ec304b7ec07595",
+    "본원소득수지": "06082fc415de122af6de8793f4a823e23bac3cb5c586583b939b67b5c9596c8e",
+    "본원통화": "6b2d0611f00ba5e74ccbfbe1f0be915d72cfbdf358db212b8fa1bcab75a4681f",
+    "볼커룰": "afab9896c2b307f1f65d3f76c94851d0ff9f8ae1a24dda92c4c0c2db41143621",
+    "부가가치": "ef66c63ccf08be207141a882a04a44b422a91e6bfda57089ed3e64ed1e7b8e0f",
+    "부가가치기준 무역(TiVA)": "e896031ebf8680aa9a222bb10eadad4152dd1ef1c5791fbe79ffd581e41061f8",
+    "부가가치유발계수/부가가치계수": "e4e9cc61f5fdba89dfb6c66395bc9f722e67fb05fb431e385f6783d38a8caf3b",
+    "부동화/무권화": "edb8224521cde6101373e7aa398e9faf5a03a03cb052b580aca30fa559b61f3d",
+    "부실채권(NPL)": "449d58b7e08fed97a6f57d6e1d1daeb9cc16018065dc32fca35cd5402eadb50b",
+    "부채담보부증권(CDO)": "c8dbdd9cf3ed8bf176009c06a9a90d83b5014f5699cc1b67c036ea3e8bb04a02",
+    "부채비율": "279921c7e6c3619f6fde1143bc01c0f2fd8a659f4cfe2509be5b31334cd8a238",
+    "분리결제": "6c8133708216ada0feb4a9c579482a68ef5a55d06da7379cb1835b32648c4f64",
+    "분산원장기술": "70abbaf995341be84323ba9e3f2ec8c4e38728ae6e9942b67987340c9b43da2c",
+    "분수효과": "28f985bfe96a6db25cbd2f6fe1d43698782df42efb185b184a800655251b556c",
+    "분절화": "4078251494e4043264997a685aab09fe25d30d9abe88789fb58f08666a404eb0",
+    "불완전경쟁시장": "dce87d46b60001db777fe6f17458ea11f5a863c1f0a169c4ff4faeaad27e8e0c",
+    "불태화정책": "f6c3b23a0722907fe6bd233749ed34d0fd75a587aee6fbb642b0a07aa2715e0b",
+    "브레튼우즈체제": "04723b9b3950b5fae6fdb3c57bd30c09088ab5bc5ffd9bd37da6caebdb453380",
+    "브렉시트(Brexit)": "fd9401c9fe89819438cb9991839a50c60dbc4dd9f697df57fe166469ef79cb48",
+    "브릭스(BRICS)": "7b04ae34dca4635ed48a7d342b1817491ca8c2ca0ae75dd5c3dc739b65a4e0f3",
+    "브릿지론": "f4b861ddde506ad0505f1cf070aa47aeb768dff991f3c798a3e3211d714c4e1d",
+    "블록체인": "4c840021a25f41ce3a3ba49ca5756287d32973d7a9b157aa6598dc52def338b4",
+    "비관측경제(NOE)": "e5888dc90c7edb8dba0148df446cec84fa0d3070c3dc05ff304f1cc55c12d08d",
+    "비교우위": "5e3d8561c8565b6e667047af750f84fbcea4a4d604270e84d0f5da7b991134d8",
+    "비용인상 인플레이션": "7cc3458a6a8593d39978aa60a731fc034f878e637ea63fa47cc985239e3b867d",
+    "비트코인": "870bca93fd5ee3d8cb04432548fb711361066de84ac4b159be252b4ebf48459c",
+    "빅데이터": "4d561972c6cffd644e3c0eb25c0a72f56883e09730a71b0a8a0aecb6c65ed94a",
+    "빅맥지수": "5e201d86c7cdfafaccb19375abae6a197d39dce9ef59bb94ae216869b00b20f8",
+    "빅테크": "ed059e30600aa43b094b32dffae74f761ed4925dfc133b45038819d00d835b12",
+    "빈일자리율": "95553b748f5caafd56fd3b74fb531be478a888b1540c04b593f11e2504bda02d",
+    "사이드카": "90f68462680047701732d7c8f993c862fd67b9ae2dd3b4a51a4e1df8554470a8",
+    "사이버리스크": "567c593016891d05f7e1bb5565956e2ffabeae4459f6fad05d73a75687f0acee",
+    "사전담보제": "0de084fd1006eeb120acdf7a7ec5f57537c340a44fe863f476346a2d7e8e3a85",
+    "사전적 정책방향 제시(Forward Guidance)": "6ad93ec686459414be73be98624da572bdeb285cccb93377f39852b3c699e0f5",
+    "4차 산업혁명": "8f3a05f271850610b8cce507404d6c4eba0d19a64340320c4788f22abca84b3f",
+    "사회보장제도": "de5a202fdb5b8330b623aa093bb65501814a86243c68e4b600484cfa20d2c63f",
+    "사회보험": "4c12a20cc7377e9ce545d79aaa6d5015d09d1c5d76f9d096f0e2b9ce3f49bca8",
+    "산업연관표(I/O Tables)": "dfc0f9e40d32eaeeb08fd5b29e968ae16ddb7b02cd31b3f84132d8ae0ed97e90",
+    "삼불원칙": "74c59232deafab464f99894528f635f9de739aa1f2b68619d2d7de8acd9d21bc",
+    "상계관세": "c1df43ff79be1e6c2f9c51751c360bca80d5a0e9258d707f0fc616219a5ab76e",
+    "상대적 빈곤율": "ff2e9e74cf0c74a0deb44f3b81cec84c5287c508df998cd54d8d41309bb0ed1f",
+    "상시감시제도/상시감시전담데스크": "ab637c5f2f9b8e36b80719dc173472e8c36759c5290e7eebf247d4d014c54df2",
+    "상장지수펀드(ETF)": "fdacf005ce0656741dd39ee0395b24aa7fb08f40173d7865f1172aef7285fe32",
+    "상품공동기금(CFC)": "ddb08d1f56997854612d05991b885ec85ae1133cef7f925f76ee8ee1b4c1647d",
+    "상품수지": "ac5b8ecf63178b5dee3ba3bf0127cb54c5c89f0cc979053ded0f7a1352bfe5cb",
+    "상호관세": "105989296db6a6420c3f044d578b1d2a370f1d524a2ddeeac65e617e0c89e4f9",
+    "생산세": "c8154e5ef24ba547adbd82bb7dda09461dc3f62ae8d4c1bf9507e3363415e031",
+    "생산유발효과": "4e703c44cd2e9fbd4f060c0763465534f27f82fc900582c38a218e420fd6a72f",
+    "생산자물가지수(PPI)": "75e35b08e2ddc2031243044e1d679a6ecb97f1dc73a6261f2b3f748d941f6de4",
+    "생산자제품재고지수": "76173b2e0beaf46155a64bfa2d32ac242d93382726397e21e947f00463e728f0",
+    "생산자제품출하지수/생산자출하지수": "28e23065e427589638d248860cb6c3d72449c1a8ff85ab9a09bc3f8491e82db7",
+    "생산확산지수": "3df38727665a3e2fc6c4e2497c17ba25fbdbc86f76f63a682591fa5cc0939538",
+    "생성형 인공지능(AI)": "1d9f4f50858528c6c024af98a03da48d6cdbdcab7fff835b9350e7909328fe06",
+    "생활물가지수": "336aa5201f4309912fa6a3b705ddee6bf4c3ef55d350fbd5a69cbdfd4553e0b3",
+    "서비스수지": "1a601abb028fd8a862d8236357d2652310887ff35dbecbe78b555eb62c8c4af5",
+    "서킷브레이커": "03754480573ada071d820cb255398413265a9d3f709606f4e2849c6d37bdaa34",
+    "서학개미": "c8220f2a7132fb9f46d4d9523a287190b503335e454ab07d47a100721779c491",
+    "선물거래": "37f460adf9794a8b59f69d1544920e24515d88d19db41fb4c90f2233ea06c3b3",
+    "선물환거래": "af7e0448e8ed5c37bc002a4e34a8bbec5af5ef0343b6eea9bc5c7cc98857456c",
+    "선물환포지션비율 규제": "8a285c055f010efb2522c93ba7529690c7b62f8a4eae53eecce3d8c1cd06fc52",
+    "선불카드/선불전자지급수단": "d54880cd3d424b6365be17e209ed2f9e1a56399590c9e76584c6cabae26a8b56",
+    "선행종합지수": "9cfef37262d751a3fdaf59e69b3d78ec622317958d67bf7b7ee19c84a3eb43c9",
+    "성장기여도": "2f6d81de6d0f67fcf7fd4b338efa6ef5bba27d3c34084c07a4982761369f9027",
+    "세계경제포럼(다보스포럼)": "fbfa5430f4e1bc32736e7d1cd539eaa0f69b0230bb9a81712c1b20877529ed5c",
+    "세계국채지수(WGBI)": "692693c3825da434dd83505a1e85f738dc33bd054b938a43c057aa8358657bc1",
+    "세계무역기구(WTO)": "115da14cc5c4f23ed174cee9b949fb438da506464ef0757c079c628ba79a96dd",
+    "세계은행(World Bank)": "27df29880b79ff886e4b9fbe920aac935925bbadb34d7a8a2a2e5e039457b3bb",
+    "소득5분위배율": "1556c4765c3b352feb16bc1db3790ef5955f93f55aa6c92a8519e2e843f7cde4",
+    "소득교역조건지수": "bfc63671c616fd872fd797bb9e7fea192075e5feb02426b223d28b53d4d52f4a",
+    "소득대체율": "a52a9aa547a23de4668898a7f6bb07731c8d7be280122c2b8d4cc7d87f7ebbc8",
+    "소매판매": "de29889b0bf36257299599b433ee5fe6ac3cf13707eca3cbf556c9b952868eff",
+    "소비의 비가역성": "796cd5e1e73cd3258d1e027c543ac73c6bc1965a71b2e4680a989884af82ff9e",
+    "소비자동향지수(CSI)": "db0dfcd5f4d19bdb1ce7b2c7382c0ec58b42eca526fa200b3236f68312fda2f7",
+    "소비자물가지수(CPI)": "669784d556f3be2a5d54b326085cfaad1c6c9189d54f99a7ab7003b901da87e8",
+    "소비자심리지수": "9ae5410fca664604f101141fce6fb3572624f627561fa03c67847d5a48b84372",
+    "소액지급시스템": "d94d9106000ecc79fcb7260545cbe8da6598b7fb35a2b19d656aba9618025b44",
+    "소프트랜딩/하드랜딩": "8a72c90053f8ecb7fd9cd078dac158a4e7df31ba30b650a55451aeab183ecede",
+    "소형모듈원자로(SMR)": "0e1871101bf85c1f2d1824c4f4f6c691da30ec8e7bd44de74d14d19c005432f2",
+    "속물효과(스놉효과)": "fa91b26c81501fd0879cb4544887b2b63c987c58650f14651f6c2c05a6f5488e",
+    "수요견인 인플레이션": "6e98321a4db8d23abb883bd8da0cd23ca5a76cc8196b2c598b123a4037ad35eb",
+    "수요탄력성": "0262f48546e8fd11dfceea568e667ff910a9f84119f9f824d743f1af4bd39527",
+    "수익률곡선": "e4e42b2cbf1bb60e3bcf93e18fc966aaa5a3417a94546c6d4c57e0932aefd398",
+    "수입유발계수": "22d639750b480c235b20fe803b2952070365b781bb760fd1ab1e021bb3c3c1c6",
+    "수출경합도지수": "53995baa29fa7f528ce578086bf83d39f257f09f8ba7eee7525d8bd92bd9fdcd",
+    "수출보험": "9ac9203a506f880f29449a8bf80d8d8217f66d5d0c989c84ec4f4beb56535061",
+    "수출입물가지수": "cd97b9c3848af8fb60d13ad7f07ca684e77acc8c3ea410d90fd1224bcd57c5af",
+    "수출입물량지수": "e375948b3c2e17c8182e22fc6f95b7d142fef3b6e53641583897e808c2c419d7",
+    "수쿠크": "8a53b7050aafa8c632e23650f6a00b5556718e9e28fe150adc15e722651f29d7",
+    "수확체감의 법칙": "f7a19804c09b2015c8a38a13ea66f5ea2bcd000956aa2fb2c825bcffbb073770",
+    "순상품교역조건지수": "637f6ee7dfb4ae563664756f2ab84fa5ef6292fb703e760eb3cbda66e4bf4a5f",
+    "순안정자금조달비율": "d8f1d0ef01c0f9c08fd5e4f8693f8a3755ca7b6bd44adeab1acf194de36587f7",
+    "순이자마진(NIM)": "00dc37e4e01064815245a350444bf3e11362fbba7219a4e81215325b76f4950f",
+    "순이체한도제": "7010eefe1be9c4783c35dad582693b3749d4c8144211c594ee27e6e634b1f19f",
+    "숨은 그림(은화)": "bc6cb52d8b9492cbccbfcf7463ff02341b4a49ab06b12da941664dcc7e63fba2",
+    "스마트계약": "5ba8bf12efbecdc03f5e97f41dee2bec762801befb4b7428944a75b7e348ff94",
+    "스무딩오퍼레이션": "9000574c366dbd72a2e5e8834f8052adfe922fa7fb5cb24a7c94c02e73c067ab",
+    "스왑": "9702332e0170072b59a087893196bcf154e281826e1c89e20c297fe71ca1a079",
+    "스왑레이트": "0a31b279fadc696bf2d2d9aeb692a54324a5dc442358fd7fe468ad6adb0c9259",
+    "스왑베이시스": "5df042bc46668df02abe49676de60d865b6290fd92f4121c75b14bab8f7fd246",
+    "스태그플레이션": "aeaabaed562d86beaff17ba11bd18b66abedcc07b04f0ab4d35cdc539a76825e",
+    "스탠더드&푸어스(S&P)": "2a273e00490149dcc7c5bc2976874d9b7ed7297fa1394dcd22d10b0140adf2b6",
+    "스테이블코인": "1496f1e95bfff733edf3dd08122300ba113ea75dcc4e05ffb87a5fd3ef3699cf",
+    "스톡옵션": "9ba31d0eed3053caa4046546688de21d8801250a378f934dc36b1dc8f67a9f1e",
+    "스트레스 DSR": "60d5a5d0f854a34c6f10c336c590c91a5a0ea5595ac3cc12b8d534d79b549b6e",
+    "스트레스 테스트(위기상황분석)": "be8956442ac2e401b4396cf0f7c79824eff5c2c119aeabd4700f44719ea1d48e",
+    "시뇨리지": "65a3b0ab31b1bf356d17aee28bd4ed039e52364bd05676ac09181dc196bdc96b",
+    "시스템 리스크": "5dde383d2e01cc89fd79dec236b9325f79c5fa7058f4d074d753c9ba92ac66b1",
+    "시스템적으로 중요한 금융기관": "4c15f90bdf297ed22fd5bad2291474099f5f4216d41f49c512eeb385a84c6ce2",
+    "시장리스크": "b19ab272214d4b492a074bc483dfffd178128db960d4306607a703ad87529b51",
+    "시장평균환율(MAR)": "873529fe02d97e0211fbc537457759e2325504e2275727ca34dc789bc8578be0",
+    "시장평균환율제도": "b4486406b4f66264fc9a7813dee5f95579838a51800b22fcef95c5167a1493be",
+    "시카고상업거래소(CME)": "e3c98224851f13b251e3e77c32b30865d859684d42b924e731de5a78ef03ae48",
+    "시카고 연준 금융상황지수": "d55eba51e1e7c558eac127cc616e990ef6ba2ad105f66dae76ddadf9a9edf0b8",
+    "신용경색": "850f41e140fa43a9775270a4337bbcfe74e518cde89ff4ef9aba0c24fa8a4a16",
+    "신용레버리지": "ddc635d50b9d8169202365b3154eb87bfb6ed94e36adbeff05a5c5129a46ea41",
+    "신용스프레드": "93368475e5971fd467deaddd1f3f6524d5064ecacb8e6e9ca1d8e6c5b8b921e1",
+    "신용연계증권(CLN)": "ec92c8db2768b32e4e89d1c54e9309d5c7ffe1eef1ee144d8f7b36dc27303501",
+    "신용위험(신용리스크)": "ce66987cc259420fc2762bdfafc20326b915c5ee3e557729f93b9d6bbc0406fd",
+    "신용창조": "8817028f20d1c9fff5a002ea779a59c8e1b19c77bdd2919f1ca6a1fb30b06315",
+    "신용파생상품": "7a2194ab469a12e4b823f7cdfd6a859c04f4868acd9dc47080c39ea32558f098",
+    "신용평가제도": "0dda759f7c4e8f4e0b22b9bc2e98d021f29ea449baeebbf3007d2a19f73eab9a",
+    "신용환산율": "aaa5fc6734a48efd78c2e7b8709d631db55984e401f5445aceca824e8b6ba027",
+    "신·재생에너지": "cd4533a0bf1d4ac6e64c2669d856af7daceb05c04048b4f8ad118264c4e6e545",
+    "신종자본증권": "e41043c91deb0b41ffed76ed4e8a40731e99f7b1d2b566fb44af37f7f3942d92",
+    "신주인수권부사채(BW)": "51dcf495175064183d33a922dc02463d9d2e591cf4e7bee5c81389a40162783c",
+    "신흥시장국채권지수(EMBI+)": "c761708e15fd35bee744246ec52e11e4fcac630e35825ce4a2583a112cfc788e",
+    "실망실업자": "a927ffb0243e9067759b18883ea269f8f84469e7be04dda530120a0284228a7b",
+    "실물화폐/명목화폐": "d06253dcd82e6ba7658a1839f4a0b74c6256c8f84b09ca0edd5dc869678fb624",
+    "실시간총액결제": "7cfd2b373382484f6a31762bd7d040597cc21427b1046d88d4580f80b72a8850",
+    "실업률": "d77143d1c8efed013767ed2fa9ce8064df4544afe8409675064f34cbc3cd773d",
+    "실업률갭": "6658c4ddc5fa3a28e6ba79b5b2fab26fccbf0cb18abc4625c68718db9e4e865d",
+    "실질구매력": "566701ce2be569f2903430cea75a4f17174598c77a812fde976357487a0fbcaf",
+    "실질임금": "b1583b219c1f7093daef9b59f372471a8144b1c0d25793d364c36a624b0e6f00",
+    "실효환율": "e3f48f81d123dd749c7f8aadc3200e6ec6dab2a730adc2fca6f1555d62475a1f",
+    "쌍순환 전략": "6dbe2b84a2b0b0f3fd6e536143519a4d103ff9624c42c9ba2870e69c67f229ea",
+    "아세안+3 거시경제조사기구(AMRO)": "db68d934a42d82ace626d9266fe1e562ba59651f4649494f5c420080255e41c6",
+    "아시아개발은행(ADB)": "dd6439f5d5f24813553e6e5fc2331775664d59f8af0d331e241b1d6b9b2d2d88",
+    "아시아인프라은행(AIIB)": "f7259e47de2fbe833994382b26e93f5f6e52ad30fcca4c2d12bf48fe0938ec27",
+    "아시아태평양경제협력체(APEC)": "493bcef3b381f88dff3101e2e0d4c6c7f421a1c4183788792a51c7a727f465c7",
+    "애그플레이션": "a1536c38730a87c9fcd105d8d6f2192375b30de5f059f1f579da600ab35978ea",
+    "양도성예금증서(CD)": "833d524728043f6b98f318c707068b8329d06d504397acd1955d5110682021f0",
+    "양적완화정책": "9e2a6fc80a0d75ca3264a454e11ec6c9e1b52e329155c671e26c673b94247708",
+    "어음관리계좌(CMA)": "13bd4893739d37ca2f5a692642703505b532c406ce34035804c9ac99cdcebc31",
+    "어음교환": "8f30d143ad5fe2584d9374b3a553303a52db1f9efd69f27246dddf83066cebba",
+    "업무지속계획": "e16d35988ea16ac470336b73c026a017e69454d2e02bcfbc718bb8fe1f563bdb",
+    "에너지 믹스": "69c12e9ae0f5c7267c0daf017c962a85f11334d17e4bbb536f34414a3a07f958",
+    "엥겔의 법칙": "b7d754a2ff3ee909885a6f20bec2f3bab1b9be2071eef58a0a5e4cb237776e87",
+    "여신전문금융회사": "5d91c9f7c8532379c8e9f29c466c0d2d96f48440db8a2868831e3a46f3099ba6",
+    "역모기지론": "334f92f28d4f4e6db34ca278ba27798d23b5d73e7e5f4fd211dd71849af2b9ac",
+    "역선택": "75171483b81c1c6682ed18ea6d1ce4cbcf6f504a0a153dc37953d30897b81e9b",
+    "역외금융": "4efc849ed3ac87788c12bf886c7b12cc9cae49f3f4c227181d50efe7516e8992",
+    "역외펀드": "2dc174cc8d099e161174632fba4667d532258fc528ab2a15cea3c628b3b2a17c",
+    "역전세": "8960e3274a38157d4c2b8d4f9304de1b31a6fae016b03c82b940b6ea6f041ffa",
+    "연구개발(R&D)": "112a374c0f00f5c5c18677e85432a196f01acda4c1e767bcf547b3c3c8a3236f",
+    "연방준비제도(FRS)/연방준비은행(FRB)": "fdac93647871e840cf788eb77ebefaff0f4c5824dece278f0043472a1dc72023",
+    "연쇄가중법": "e035e5bff37538a4f32c02df8c8bf7faac6c679898a694a7a729e3bd327c3dc9",
+    "연지급수입": "e4e15284efc81548e6e52c68c0e18cfa179942dbf94a3f4e3c83ac0cbae1ab6b",
+    "연차보고서": "a5f69f37020fd387563a45fc303270c20c2bc426795a525fd67706d64eba49ff",
+    "영끌": "9ff9ed95131b94441018bf0b3abcfdcf5c7d4f736004faeddd23fed8f65e78d9",
+    "영업잉여": "f66298e56619e92a2e5adda9ca6504d328507e4f7eca5c6111663c23f2fba756",
+    "예금보험제도": "2b7bf11a7e2483b088e106ca264b086a5a588af8e8670ef9c69b52000c064d7c",
+    "예금취급기관": "bbf4bbd61b33f70bbafa14a111cf3d33a16b6b880e4f0d0921e898c7743f7e71",
+    "예금토큰": "72651747297cb4ec4efa3310312f01028e7591b168370f979a6ebb944c95cf4d",
+    "예대금리차(예대마진)": "c200a9d0f63e880f7cdd57cb8901243a8aad2f65f229fb29f5881a95f29520d9",
+    "예대율": "9ab345d6f4d24a366478c05e709123a348ef8de2ac7b9721bd5d42ecfe25955a",
+    "예상손실": "b2112fe414146b41e5af4d217827fc0a2216eaffa2b7230ead352f0dc5bbb267",
+    "예약자금이체제도": "f00213a37f06cac20c7926926eed5c3a6a57dfca82caf4436480e2e715f69f93",
+    "오픈뱅킹": "72f7c4b1098f11035503026ef6bb2d118487f41042be49cb9726c3d2906694c9",
+    "옵션": "3db453ac19ef330b3db63cd8ee31c6ca2b69e8b1858d62ff880fc5b693155dde",
+    "와타나베 부인": "42225e5cb6ba8edeb6ce5a9987333a7665d620424ef0130262d59211201e0c4d",
+    "완충자본": "7eaf9f3ec7e1eed7b72ec1faa71e091dd3a97c13fd60bbe91e3d148c808f593c",
+    "외국환거래법": "59dc32cd7472b5bb3d3bcfcf7d1c9d69ce6e9c5e4169be69905720f4e2128f6d",
+    "외국환업무취급기관/외국환은행": "e9d4afb1d17e6f0a30d550443b454a3bd514b94842da71c96fe9088bd0d1b350",
+    "외국환중개회사": "777809ab2b96a25b4598ec6ba966458a6e846ecb89ba8fb945223f7cbd7e7baa",
+    "외국환평형기금": "aa3512563e42f89555f4437379255cf2fce21e1712678a73e544d2399fb6b9b3",
+    "외국환포지션": "3af3f22f7eba551ac56d4a0f37959ff56dc623409d9c54a821113f89c53f4164",
+    "외국환포지션한도": "5ec6304b2cb42db53310704f4bcf079d36c7b4baa10d4acdb68598a2d183113b",
+    "외부자금": "568145ff478323ce1707d033f527e285918a25faf402097b83c8e2b66e7dba3f",
+    "외부효과": "2af4ff7dcb003acfea79fb04445d3d8aa88cd65e3aadc726ac7bcdf2c9af643a",
+    "외채/대외채권": "fe6bc78fbe742d6aeb22d57ca24094164165707fb28fb508bf240b547fe1d03a",
+    "외화자금시장": "ef76e56d60d0ee683909a49618c13ee5e3c64d02220a17d313343e92edc4e41b",
+    "외환건전성부담금제도": "0c885cb64eea69b3206c907db10d6c3fec6f5383b7793e3ed252a897a1f1fd89",
+    "외환결제리스크": "1620635dc6a299eeddb05f8fcbedd37c883eba613663da6211290b8c45935344",
+    "외환동시결제(PVP)": "9fa4b72f4264ac6da09655a329736a84046cd43e9fa42da6e0deaed478adbb34",
+    "외환보유액": "7be778f2b8eead0051a2616db3c096255e239039b00944bfe3063446ff2d03ca",
+    "외환스왑거래": "b30d8721d27106c698c50b96a857d8d28a78578c3de21430866e32dbfeedfb5f",
+    "외환시장": "d003cf4980daed801962501de458225345d566857138c9e1606d4e26107c5d1d",
+    "외환전산망": "0aede4b479e21ff3d1af2673ba850422e2a5356e34256bc4555991e190ee791d",
+    "요소비용": "b24d37d6fc3832e54ac950e6f98f399268d90deacf51015cfec08ccb9add2efb",
+    "요소비용 국민소득": "d3eb2fd8dad5f6f63d2890f8b034bdfdd793ef0041e2ef36dc7adf4f2aa4b034",
+    "우발부채(채무)": "9b52f3251d49dd9ea02ee4e5eae39c90fe3bcb27f9c203953d7dd310005d8009",
+    "우발전환사채(코코본드)": "60a3c482cac992ed919ffc02d72fc2666d761dc093f285b1b9c450aa254cad10",
+    "운영리스크": "85c8bf4c966e32d4014a8243da4e6b95eef8203691ab34d0c6efa6f36457d3e6",
+    "워싱턴 컨센서스": "88b1967dd5dcb713f62210319e1a26a04accee2f4dc0c8d366f566075baa6892",
+    "워크아웃": "e8e4ccc42e76e0b5350b43e9552e21d8e501c59c9cf05940de963b067ad1049a",
+    "원금리스크": "b9ba7796e94885d42fd19f614769140395dca418474b357d89383f9191cb1d3f",
+    "원금이자분리채권(STRIPS)": "b1d2f5cc226b4d7e76cdcee0f46b7df1b45e94b815abc22b4a9e93f2ad3644cc",
+    "원/위안 직거래시장": "439c7f00124b58ad6625829728d02b6f5c0b209efe111c041ca2dcc226f1c9db",
+    "위조지폐": "1d38ee0e636c858048fe9c54e5176e57f2798356bcb23f1b43622c9c4617d2f1",
+    "위험가중자산/위험가중치": "34e65d8ccbedeb097d91d63b776217af2519d9f6d65b7d728f1e30edde500e64",
+    "위험회피심리": "dfbb8c119330c0adc49050ce54475dc1d4892e29c68559f09edca45851735be1",
+    "유동비율": "cc402f669c95d20c466dc2c8aa82d5b5250d531d070040ee312dedf8b80c098a",
+    "유동성": "9b7d058150633e8201232c90029e3c73ab0c7a0b225680d9645c7208c700aadb",
+    "유동성리스크": "25ea6351b56f3b2162c8418c3d7a145f77029548629342f1206ce6cd96937499",
+    "유동성커버리지비율": "810429451e85c99a55c81c80a2fba1f822010856215dc24c6acd7a3dbdbbab43",
+    "유동성 함정": "8d135992fd2a64ef1cffbfc326d5c8fcb4f9842ddd767581883f2abd75732dfb",
+    "유럽부흥개발은행(EBRD)": "e4e33b64f314092aab7954a1ebb9ebfd9c6b77f89ef78f0e6777398c8c04727c",
+    "유럽연합(EU)": "605956470024ea3b82e64a187dd526cbb6b1bb4047930732a5519b42fbdb3d44",
+    "유럽중앙은행(ECB)": "cef00e6b10aa79f483751ed359c9c3baf70f1feb9e7f8dffe5cb686b8cd3f4b8",
+    "유로달러(Euro dollar)": "bfeda593ce51f69b8629399d38518501ead04594d86a7e10ca0f0defbdfc44fb",
+    "유로마켓(Euro market)": "753328d57490114778bbd02a60c42802c12b58684443c47ffabf9ce270003ac5",
+    "유통시장": "3e45c01bb7187381c2959ca4651d0f2417012d4f9a2e2cae4c6d759812f8f238",
+    "유틸리티 토큰(Utility Token)": "139aba0d1ea1c9ad52f9306fded1096d5d4454b1ca8af2d3a74d96f9f8fb0283",
+    "은선": "074bf73664831478689f205e963d1541cec909baaec5b36f3b7e0be0d90d1054",
+    "은행경영공시제도": "3877cbf255c760c4a6ea41abe0a7392eb65cf3acf189a2f31074543c5faaf570",
+    "은행인수어음(BA)": "8a17dbf983cb1d8fe689a078cfcb68a4102b8046ce0989fe48d24cf3e81796d0",
+    "을기금(Capital B)": "dc29f2a78c04864e711f8bddeabafe95f5cc5427f07f1e5c321ae17c4dacdbbd",
+    "의중임금": "1620a8f4f9fa83caab6ea093e5b913658e4d7add57da1f5ca5011c0b3fa94a15",
+    "이구환신": "7d647ef8230f0a36c336e03353ad82d52bc6d38a5e18e165ed76a06191523d34",
+    "이슬람금융": "d518800d642463dab4fe9a388a96044a199dac25db316554ddf4c91c5e680115",
+    "이연차액결제": "5daf6a304f2a783caa4dec1192aec842e806c66be7e462a7b799c9234c127cf7",
+    "이자보상배율": "76aa662b7f730b275e7c819605174782545ba51bbab02edc8dcb47f112a94f07",
+    "이전소득수지": "840aac6af59432c338d99ae907238cd2aa367b17dd9f62e7f61f11d930547c45",
+    "이중통화채(Dual Currency Bond)": "13a93165518a1505e6dd5ad6b0b1a0d5d1e23c51c31d5f65713b439f2806ac04",
+    "이차전지": "eb7a86823e8876dd56dd4f0aa48362a4f3c0abd2bd76b0c7264e492c851d901c",
+    "이표채": "9f9c86fec01bb2f77b1d263d58cf9a1d5b0070c2fb85bed73a4c645faa98b3d6",
+    "익스포저": "31da6b9f3a04406c89080e0baa8f9f1c0ecc00d418ee7ecb6b46e775b6295a72",
+    "인구고령화": "28eaab46df9af7c07994edb07ae01698330da020f9a15d875de67baaad400feb",
+    "인적자본": "16f2222f27b324224e64216d8f7419d3affffb8caccd4c2448aa1ab1546b7df8",
+    "인터넷뱅킹": "63ae8485e9e33384a57c0ab82d10741e1e56dc6faaba870c218a338f56cbbab9",
+    "인플레이션": "caf00eccf5b009325ac38f7566e97ea819c4aa1e8f747256948d50c7d500d949",
+    "인플레이션감축법(IRA)": "b4263052cb62935a49d0f48e1bb1dd3d2852e866ed1afc787ae71f98c45f3a60",
+    "일대일로": "aee68aeefcf2704488118fe0f4d379f1ccb1d7b3fe29de62d51b19517e090c01",
+    "일물일가의 법칙": "4c4392213ee6a421a832826780c49c49c3d53303cdeaf34ae91ad516d1ebb994",
+    "일반특혜관세": "11862957cfaa681ba3d5f19a821a2e4439d0cb8f6b4f4dde4e0195213c0a6556",
+    "일중RP제도": "22c522396be4232df35dcaa85cbc47575cbd1ae8abfbade4250c6a430f5491be",
+    "일중당좌대출제도": "1dda4d610f1116024e1c7613099e2c309ed90a79e773f9011aecdc14b9ee1cb5",
+    "입금이체": "0c2fc7b6fa7555a92041563352129ad46a4a95b336f8e252268b180bc2323f50",
+    "자금결제시스템": "dd8ab9b2fed7ea314cec3acb33ed2c53b94df89bdd1bd7d69ddb622d5a32c2d1",
+    "자금관리서비스(CMS)공동망": "2ef326f00018bf4330fb339104059786aaddb59f7ea3db6dd3c9cdae8085913a",
+    "자금순환표": "7ef7c871d4e3e79ed566f81959dd631836fcd7af074fbac871ed8aee9e903087",
+    "자금조달비용지수(COFIX)": "01184bfd18a8b5c8e18fb0b43e810245fa747d377e8802e008fcce75680820de",
+    "자기띠 카드": "09580c92050cc00eccc450bbfd1c2a7f7758796e663727ddd9d361add3908f2e",
+    "자기자본비율": "c51232a745b32c8176d6dd37fb3e0e4f713e1db5ac8f409b02bf8fdfa24c96be",
+    "자기자본이익률(ROE)": "01e0ddf5b55e86d3735fba323a2c59441509b6ce45c04f971823e31909c8fe7c",
+    "자동안정화장치": "fb53328d70cf88a2267931888c207c9d1c24e4c416b6a4ec07702b87f3a43e46",
+    "자발적 실업": "f98e4f2abc32bdad7e994cfde885f6f141261c2b8242883dbe5f09af9cac8aac",
+    "자본거래자유화": "16ad66a377729e7f110a4a5050a1738e7f3257179007ee8596f36c3c0161fe40",
+    "자본생산성": "746c2517dd6f2294c4643690dd24bbff2d8c89d41c25dd1739d33f4de84fed18",
+    "자본시장법": "5fc5ddea4d5619c8d21f15f6d8ec8a4260b68965ac07ab3723f2142f5b8456ea",
+    "자본적정성": "2a1af613d267166806bcfa2d6098ccd960f30d5e37e67e78a5ed06ef6dfbc6ee",
+    "자본적지출": "4fd860f681d27cbb5bc402d96165d2e3081bfabbd323946d979b65af98f553eb",
+    "자산건전성 분류": "0c0945dcc27545e6492cea04fa11c3a6b01cc5a551dfeaba84ba4d2d5df2de84",
+    "자산유동화": "9811634ee5fc0375a03a208145b5ffa3c1ca5c482c3548022e79e9901cb559eb",
+    "자연독점": "a0d82d0e2b6c390e3723b508264c62053f31a2a89211a4a6d3922e466357a067",
+    "자연실업률": "d7260991b78266ef83c861d2a71b1814cf4aad35f0d5ee3fe1989460321f2e7f",
+    "자원민족주의": "db8e67728b45ab628bce7863ed0385a94d0f1e90f4280f0636b0e054b532162c",
+    "자유무역협정(FTA)": "40be359ca5e77f30b67cf5978f216a73409917e5e651d2b859f6bedd21f0d6b4",
+    "자유재": "db6f14bf60aed21a1c1fa29422ddf11f62d533cbe18736deea3672e0452a7c45",
+    "작업증명": "9b927d9bab4b5b1666255f3f36cec0412eee12ae7457d70955ff7d422da66a94",
+    "잠상": "9cc965063fb1ffc6af78f0fa286d5d68af86c746c0b7a1b9d98c07ae0890697c",
+    "잠재GDP성장률": "64764555166d201a809cdd4475107c68b6e69cfa3a43574ba0b02645351aae17",
+    "잠재경제활동인구": "8e8d54b0a34b09a5d94a3d3d5b2e2242f33d9e700a7c484301dadc5afc02113c",
+    "장기금융시장(자본시장)": "f80fe9600269170f8764afcf735ae1bd76f6f2d43591b5fec6b9d114cfc953f7",
+    "장기침체": "5effb1b3e46cef8e701d5623e235c2580ccb7708c59ee8fdfd46de9a7e8b9cb8",
+    "장내시장": "3663666f35f72091b46fd716b666e7ef5f549965010815306983a6fb0fb34d8e",
+    "장단기금리차": "1c0771d1231a520aec0288a34e5d2b84eec7584e09d4405d057eefcfc4df3971",
+    "장외시장": "025ca0db12ff867b5897288008f37ec73a8d1e6251bf99608deadda12778beca",
+    "재산소득": "f10a4a970e685fa45c55cec6356250e1e9ead2b8d91863e3aed55f4db6d323dc",
+    "재정수지": "952e69dcc0f4e7c40f3a75644befaf02466a40feea628065a075c21882c413a8",
+    "재정정책": "1ef0fdfde0712eab1f3f3ce83ca3ea2f8abd77aa135c9e9cc22cce8e21470fcf",
+    "재정환율": "9fd3b27d3da7ee534772f98120d1e8bb7e7d876f6b2d1365fa5e0e564b499464",
+    "적기시정조치제도": "62788df66b8dd7bd0da511919defe6464497dd91d77598e20b93fcb0f116e65e",
+    "전방연쇄효과": "28c3437475ce147f2732ef93ef520255f28c27c968c4f5c151801e24d87cf529",
+    "전산업생산지수": "ceb451fde1ca04d93dfb24b361dbfa0dfbf77eba93cf37bf4d84538c7c3ad7de",
+    "전세가율": "9c9c3d7d9db3f9409fe830072ab500f5867bc8aed39f22cc362a2c6588122c2d",
+    "전월세 전환율": "6eec4b2d8198fdec62ded12a7ca31b14b1ba27fdeff73744f7d9743b6436c8dc",
+    "전자금융": "517287e4d21a3adb39b8379393eb878090749fa751075eb47bf418017f9aad87",
+    "전자금융공동망": "ede3a3507243c52ce0b068062afc7a0681c8959efbef1bf4fdce621021cc2ef9",
+    "전자단기사채": "27c7b3025f78b95bd3dff52b29d0bddc62e6d1f066783e96519896805a945d12",
+    "전자상거래": "41f12d25861baf29154a3a2845a72c253dc7749fedcc0abb44618d0b986e7a76",
+    "전자서명": "8e68104a065498b1725a3d9741c5ec425bebbc234edebe2350d5d286220a0af3",
+    "전자어음": "9c7d616ecbfd6f0485a437750e86e1d256023347b3f70db96df1c5d30f4d3da4",
+    "전자정보교환제도": "46c8fbf20257c8bae68b6c1c71faa29df2d999153611839e3cf5d08b070c98eb",
+    "전자지급결제대행(PG)": "178260f47a2edb3ff6e067e44dbe570ed72be0d0bf688653a3655501827924eb",
+    "전자화폐": "a5f2cfdb6d76076955d3f4310c3884ac3580b658289a35da3fda7949402d3751",
+    "전자화폐공동망": "e86d58597b24f7c6ec15a5603f96d4bb08e10ada84296459adefdd232904c4b1",
+    "전환사채(CB)": "1012349346deceb4284a575c340072dc9b123bbf04b002b44b7c2e63f2eeba44",
+    "정규직/비정규직": "703957a9611dbfe7cc3ec4dacaa894423f5353ac6d0cbb5fbdf2dc5bbf23b9bd",
+    "정보의 비대칭성": "4b21fc6a7c7dde68b3adf203263769b7d48517056f49c6e47def661815939c0f",
+    "정부당좌예금계정": "f3dad0c86593332cf958b2b9fe1dbb474ae181d3947890f07f07fb8549455ec3",
+    "정부실패": "a1839a45fbb50a15db0e71cf79e7a9d6337e418b33aa62841a6ab4e04ab37ab7",
+    "정책모기지/주택 정책대출": "8d4f9710b7bad5db17329b258f461ff49001a66c55110462bbb14f5294cb8033",
+    "정책시차": "57f4dd0b13458f009a57de0bccc74e1e6293eb7c0cda6f99f76f6208227ba82c",
+    "정크본드": "8a4b185789baa9184c9ff73f4ddc8b3fd71947729c14f65061cbc1785009ef9b",
+    "제1차 통화조치": "260a90baf497997ad62574ebc65602ef39994e1064bd001835840423e4d4fbb8",
+    "제2차 통화조치": "68a3cb6dca335688175709006cdfcf7dd0aedf52f06e9d5ebdee210125f5b895",
+    "제로금리정책": "006028803f934c50ec761af0fa9fe34380f302aee4052bf646d9f43ec0187146",
+    "제조업생산능력/가동률지수": "bdc41bf256aa42e12637b64f0078d6b48ed6f79db164e48fb063cb4932305fb1",
+    "제조업평균가동률갭": "ce7be562d07d76398d8894b69749a0dfe03a37bbf7c20c3f28d2c29602e7573a",
+    "조세부담률": "fbc9396ba3d936be94066407dc47edecd5620ce10e3feaa49ab07aaa7d86c6df",
+    "종합금융투자사업자": "7810a5387bc633c6710fc7ebe801a4bc83168e26e7b4d185a43d86b1be8ecfec",
+    "죄수의 딜레마": "dda73b7a1f81cc65b0991442665d28a33d9ad12bb44b0c70733bc5e43826b694",
+    "주가수익비율(PER)": "1d8e8be039afe7202461c1323605dbbeb7c48f809587c02d4c4253e5ba1a77b2",
+    "주가순자산비율(PBR)": "748e05ea4fdd9a63476eae5887687514a62099fa81b1e8b1ae0566bf7a11907b",
+    "주가연계증권(ELS)": "77ceec90da27b6a36c7aa4f8083399993ecb422fffad4b06745d8fd6645ac25a",
+    "주가지수": "33a6ecec40544e1e517fc28f168deb60a916c76edabda801283f84454e290cee",
+    "주가지수선물거래": "baefd8b2eb63be467e563f19b1df875c512d62d255f7412bbad10afd6623ef1e",
+    "주가지수옵션": "44b8de12a64d3f5a00e9380e2d3d1c25f02bf72d145d55cbda2fd30104af8de4",
+    "주당순이익(EPS)": "473a5354e484eec602e34c5f7256de5c1c6b20c2cd0081afb174919923380635",
+    "주식시장": "348d1536e5ed15f7818e72e9c9acddf0663a771cee88d5017d543996ecd028d1",
+    "주주환원정책": "51c1961e625bc101daf6d49d6e367204ea992230df86c196e2a537a3aaec434c",
+    "주택저당증권(MBS)": "a4f1ce8fa3e7088dcb81dbe5260f0774a6fa0484b0a880829e25131ae9932c94",
+    "중간소비": "4ba0cd823377f648e3a73bb66ac2ed49eab80437cd2b77a54e32dd6de7b90b6e",
+    "중개무역": "472e827ddb4bbed3bd9ae951b590fb52af5587e6e791cdc80260eb9081db8f4c",
+    "중계무역": "6e68a4c53d897b77f1b598aa5ce1f8c4c8175e853ba5acfea99b62d4810f3cf8",
+    "중앙거래당사자": "03f79a85390bbaa8747f4696c3a3fe7210d3f4fb88637a8dc2266cb386109003",
+    "중앙예탁기관": "01d183ce16fcdba14f716bec757ed8c2712ae083fe84cd066a1988e6574f84af",
+    "중앙은행": "7e413ffe075497e6e2a958db3e6aac42c0deed82e0d1882f9540cf53a6a37dd6",
+    "중앙은행 디지털화폐(CBDC)": "a8418a6e0ac193114ab0aed4903912b78ff88f8dc90ec262b7c1131063977950",
+    "증거금": "d7821e0b6d444b8a688be4550d866d2b51a63d82628d77dc4ec6250bb5814667",
+    "증권결제리스크": "d8accf9f7aab5b20b997d6f5f36375b9405928b695042f6c0b2a9c6dfd228f07",
+    "증권대금동시결제(DVP)": "45f36c8c3f4274c65e1c9696c390b1d1a6971c9e5c01bca7f2f3e11c7e3e5965",
+    "증권커스터디서비스": "c36d558c6e45c5b5a3377ab017fc4962ff5dd9599091ca59d3600f7bd86df619",
+    "증시주변자금": "7e9733c1eb2179b7347d5f13b643c223daad40b99841404e142f9bf45f30141d",
+    "지급": "866142c8099e61c5b8dfc50f53692e563f69351146d7de896d1ed86582559cfd",
+    "지급결제 및 시장인프라 위원회(BIS CPMI)": "38e75c913c629e8f2d53cbdb2cfe643785ece087c28fdb4a1ea4bf8bce4bd21e",
+    "지급결제보고서": "dc7888eab0b79c7ccf6cb509b525c0f32757920125acfb0c00867c07b672cc5a",
+    "지급결제시스템": "f7f6124d0e824d60818d44bc96cd169627a486a5bfabd9994de68597023e8314",
+    "지급결제제도 감시": "a6a017525a1e03501e78cda2479140f9cf55dcabbec12ba800742916a2129ccd",
+    "지급수단": "f662fcf79448bfe2561053ea2b51cdf3cf330ff20129a41b4060362aec5956bd",
+    "지급여력비율/K-ICS비율": "7f813e5b368a3f9c069640ac1e0187b229e3a9600f86f72d8609976a687cb131",
+    "지급준비자산제도": "342dde67807410dcf62f5ba31a975934baf8a05f668919c731292b3336e6c58b",
+    "지급준비제도": "575c61551e21e241593a4b9b6096b9304962ad84c204c0ab3f18e1bdd38397fe",
+    "지니계수": "74815aed611d48ff7f788a2632ca208792bed1e1bdbf2c49d30a018ad79bf920",
+    "지로(GIRO)": "bc6ad0474b7183c7ceb3c6c1ab06b992a5195517492b95a3de9a9962f1acdff3",
+    "지방은행공동망": "6e144595c6d9ac817b225073247d0f497cecb817f27b2fab0fa01c70ace548b2",
+    "지분형 모기지": "d3202273eca163cb517ca5f651acd6216f34a7fd59d838de1d2fe647ac66860b",
+    "지식서비스 무역통계": "3e47e37ce0b5e903c319863e3ef957a8b6dc1154874ca5c06c749df313f842ee",
+    "지식재산권": "47eb54e901ea7924db19b9874489822fab1079378676edc548af29adef3aee8c",
+    "지식재산생산물투자": "f34688a824e2b8b618c8ea7e1b2f3bea9aec27071b28f0b273ffc38aba376b0e",
+    "지정시점처리제도": "c82d20a62fddff213777335db586a8073cef10b7f1c5fb92e5bb68360059b454",
+    "지주회사": "933943a13edf5f7f21841b7e0b940980d6efd1e2635603f1f440b34a83198307",
+    "직불카드": "7b0e00955a76e659875eb0f0c6add38979c96f3b6bdfe9bef7b0ce359ca14b39",
+    "직불카드공동망": "af2123b8986e2051a3c2cb4bd4683d28ef534693a3c86e92eddba2d50eddd92a",
+    "직접투자": "c3ba0c7ef666fcd7102b35ac40153faada924ea16c753622d9697760e1ce44d5",
+    "진성어음/융통어음": "7b94d43fc0e97354bec3b98890ba830b7180e1eff94387763c82bee1976ceb71",
+    "집단대출": "8505de882139a9ceeb681cf647fffdf4d769d638aa65cf0118687bec47607ebe",
+    "집중도 지수(HHI)": "48772bef97446c92c296c184782a241efb89af851a4bd903d4bcdc260ada489d",
+    "차액결제선물환(NDF) 거래": "611f719792aeb98425b259adf057e2dc64805cfd874c2bc8c6fff57b26fe0974",
+    "차액결제시스템": "d869b4d3acc1ec983dd3647b92de1498b816a1964fd7cd0d261dbac3a9262321",
+    "차입매수(LBO)": "98f32ceccf88fb0fc85963f8efae4af005790cb9b7467597ea598a6a88979f03",
+    "채권시가평가": "1c61c4a62ee15af4a731e0a4650250a2058ffced9bfadda7d0d7475586cf59e1",
+    "채권시장": "eba074ff82a43cd867f91a582294db1259a53bd4a41ed75c72a75a5ff620ca09",
+    "채권시장안정펀드": "2d64f197e4765d14c235d9a73976ceb5253b766e611a3ef90a8675dcaa623fd8",
+    "채무불이행": "7445317b4b793ca3abe3da5ad46a53ec0f30de282da1dbb2958b2cf296154501",
+    "채무상환유예(Moratorium)": "45313de9c01197cf9e5b997b7876611da41fc4961d5020bbf89a31a05b382417",
+    "청년실업률": "6e162a6e31e05649979f216bae0175a99861e3213a63ab2b5d804b56e2132366",
+    "청산": "f9b217bba134478ed922caa3ad39f756f7cd664918330affc5b539d041c1f05f",
+    "청산소": "321f4b254401dc702a1d9935c816ec991f5bf63e24f83477eb7be7a5f94e49d3",
+    "총고정자본형성": "a212b4d8c79302a19a71ef14bc82ee74d3b6634910a7f2af3785aa912c518f61",
+    "총부채상환비율(DTI)": "173e8d3070aaca7aa6f80cc9a81137d84a880eb980426b9b5d63a866d3fbcf10",
+    "총부채원리금상환비율(DSR)": "c9a18424655a6b69ef0bf28fbc847296da3629d92c1915288507c3bd4417c23d",
+    "총산출": "b9279ad0ff9feac74b8ce8866fe1c3bb89f8675669b09708cffea649967e7d96",
+    "총수입스왑(Total Return Swap)": "fb1a0d1e42a01c145e02c8cdfc42d6fa593265529f37a9524a2749a3948cc999",
+    "총액결제시스템": "547f3844fa876623c1fa812c5b7ec0a9e719503c5d44121b7fcf8866811b1bb3",
+    "총저축/총저축률/평균소비성향/평균저축성향": "e203fe367c40391b5920edba0016db89d9cb28d2eb2243e7fa11944fb5158b17",
+    "최저임금제": "c5f57f900fbb30780b5b291f4da66cea51185a889e59a0709fa2677fbd231bd7",
+    "최종대부자 기능": "61d9c24225dbb009da642e973bdb85cac698cbe47c2473a50ceff33841f62819",
+    "최종수요/중간수요": "c7613c7f26a6571801551fd4d5d36dded52565888937e0826567b75f55a8fe0e",
+    "추가경정예산": "d08adbc8b5d047c7cdd19f2c051a67970e3e45184226fd91c46b8b75edda6346",
+    "추심": "e049a25ff2cd44676a5b693f46c6b35a0000bdc44deca3e08e84a45ff23bc814",
+    "출구전략": "2f88ede54d24bb7fdb7d28186eb522f1c570943898a347dfb3ce3f6231902ee2",
+    "출금이체": "9a7741cecb92406e7ea685d974178a489ae486168560b019071776a4174971ce",
+    "치앙마이 이니셔티브(CMI)": "3e7e01f1bc54bd7038d59190128494b37c72f511af64b934f6c66ac59fe7ec84",
+    "치킨게임": "2227232613b1efa7ec607886b7036a3afda31b7a35dadaf55885f2abd7268026",
+    "칩플레이션(Cheapflation)": "9f9663c5bd09d6cdbe70ab79d834c2f08538cc9ec4d5609b5e397ed06a3494fb",
+    "카르텔": "a452613b0f97dbcf81f1ccf028abd78d3fe9a955f6de4c3bf4402ec7128f65b5",
+    "캐리트레이드": "b88c45b28178b16abe66444da2a4382567da688ec9d2d476d6f3aa93defc10da",
+    "캐즘(Chasm)": "9bc9161600008cbf824bcd7b0f47cfd437df529b19beb525590dae0b42aef851",
+    "커버드본드(이중상환청구권부 채권)": "b2726d4a79ed357f5182e3f4aea63a1a5deec45865d1669383223d34b66650d8",
+    "컨트리리스크": "88e621ff318589dc6505869038a66178cdac00a97a39aac934b11fc8c83b0679",
+    "코리보": "399334b2dcdbfdfb8b96a18ab901fdd305fec135f5cf56d605dee4fb05983a46",
+    "콜론": "b7faa5009f6078ca8539bf0d3a0b09088a2e28ec5145f4ec824cd6a9a07d7040",
+    "콜머니": "29f6b6990cdb556edefdaefcd1cf433f0ddc263ddf8c6f6412be04114bfa61bd",
+    "콜시장": "e194b55b36b5ee9bcbb4656994cecec525413266a5b3fd8983010cc1cd050f2e",
+    "콜옵션": "ed17b56ed1ffccfede05962161ac1b0079ad69982270f3ac9340b5edc3ffcff2",
+    "크라우드펀딩": "79a0a6f6934bfb55cc2c2dfc29410e1f007937507be3d51167229239a2ec4dc1",
+    "타행환공동망": "c6e66acc84f7e06b0fac096170ee59ae44155df867cf3e02bd1be73368e3d6a6",
+    "탄소국경세(Carbon Border Adjustment Mechanism, CBAM)": "676f2e56c562b5d0ee45add3febf6621f99bef895ce28ffb56e9edcf3ad64c1a",
+    "탄소배출권": "acae4a4c5665c5ca4d509a4939cd2ef4f1d7d70a13afebee95877c29ac293e11",
+    "탄소중립경제": "058f705f36fd49838c42a6d0427b0871f6a555be7ebfbfdca799d803dd31610e",
+    "탈세계화(De-globalization)": "ed92e24a43ff103af8a426e852bb8f864e9bd6984d96aa4145bb8c24b97ccd63",
+    "테이퍼링(Tapering)": "78eb116052e73db3c0ab2e1be5214da4ddd4b02c85abf76030dc82e28ed4fac0",
+    "테일러 준칙(Taylor’s Rule)": "96ec0f8584d111d3276c44bf04051aca5bbb230eb4dc988c0667074be95e5cc8",
+    "텔레뱅킹(폰뱅킹)": "9337eb9e456d920a70f815c02fe386422a2dffa1919450a27d41297c2350b0ca",
+    "토빈세(Tobin Tax)": "db2a764d1fc8e9390e1c2049123397d147202c62c8c37a88b2713f7308a713ab",
+    "통상임금": "e30eabee133038b7bde9d12e98fddf194eb45d73dcddd1af714d191053f82647",
+    "통합발행제도": "23b9b8d429efa479e37a29104028fa20392c512de30e14797f61afb05a17bf10",
+    "통화스왑": "7327afd03ae717b95dcd8b8cadccb97d5d51133549a65c610d20db2d20418954",
+    "통화승수": "ab6f8c266e31972cb24147fddd9e9046117eab45a7beba6a3254217d00715938",
+    "통화신용정책보고서": "0f0b61a6545860be1c5c840733c26cc97a9eb36661b2b2e6cd04e4fe6804a727",
+    "통화안정계정": "1a0c3eb2d6375bee79d23f06996dfcdfba2a73aaaed8bc1a2aca3e9b6e15be15",
+    "통화안정증권": "87e5e9d8d74a83154faa61419c81906e803c05c7361784859f6c275245153e55",
+    "통화유통속도": "ba4a960e17f9f614a1e715fcdd4ba4a2d62e30746137e7223c13f0f0a49d51cf",
+    "통화정책": "c974346b0d8f99eec64c6b832f578cc7c078382687b0bfb37903132b892d3fe0",
+    "통화정책수단": "a81fcfc92e49651540e9012cde79843ea16bb33cc4c92e4fb597321884df1dbb",
+    "통화정책 운영체제(Monetary Policy Regime)": "30da2280f53876c74839c8a789ba33f68889f370cf3a5fa48bf39cf6dedfa72e",
+    "통화정책체계(Monetary Policy Framework)": "53f01d49357404eca00d3f56c60fb39c3bc9d629bf35fe5ae2cb9c56e32d6b5d",
+    "통화정책 커뮤니케이션": "d2f6c77e9a0de01964289ae82c8341e506c686467fc75f977983e309de068d38",
+    "통화정책 파급경로": "c29b9ddd8091bb17e7961358f60181c04d19a3d0f1642635f42d6c55974c8637",
+    "통화지표": "eb09ebde7b3bc3784ab55e0e782ca22bf563867ae88d58c36ba1e437f6924b2a",
+    "투입계수": "5e9c8f93c9b1eaa3b245d3635aa9f7746084b39acbedded1bbc1480d0e3ef59b",
+    "투자율": "f34de74c9304cc70f25c9e3eb7c5afc1c8bbbb73bac962e67f2fb3ca283eef60",
+    "투자은행": "9078d75777e4edeb7b4b91dda86d1b4ac0c3501d80c97b195fff42fdf86c7c6a",
+    "트리핀 딜레마(Triffin’s Dilemma)": "694ae05af21679851dbc2ee544f98631e64ff9e0d1ea693e367a0bb3024f40f7",
+    "특별인출권(SDR)": "7e5bc4aaeae04361f1521baae891136dd4d2f5f46aed0ad933affd1cc6380e2c",
+    "특수목적기구(SPV)": "296926ba9390a426949676ff2c700d2d08c5f179c5f83046b13b021efcbe2acc",
+    "파레토최적": "5e4f516201de8f551e0a234c55fd647c2944fb6e76f91c9341d495e3cff56f62",
+    "파생금융상품": "d9a8f09bc47734c2f3d5d144568393d421e0c5efedb363e3bbcd156edcd31958",
+    "펀드": "8be89633018152c8559128c3de87d6d0a96cd55ab79d4b3420563659ea1fa4ad",
+    "페더럴펀드": "82c4dfd38b367d30c0a030c1985f57ebe3bfb5f1e7b78f357c14fdcfbc015a39",
+    "평가절상/평가절하": "22f9b3ffcd5be02bacabdffa0c43ff9ae4a5e896e4acd7ba818f40db7033804b",
+    "평잔/말잔": "854e9e1c063bfc08165bdad67f1d50c953efc5939a60f56dfe5e97587d15cc57",
+    "표면금리": "6aaaa0cc5108847ca458d20de6b323fd9d488dfac6c7549d968f5e89fbb56785",
+    "풋옵션": "6c765c6cc826cca6cc7674c87556a87a8f354080f76f0c9fab7aba682629a9cf",
+    "프로그램매매": "cca044c797d8d4d2e88370233b85b6bfa981eb542dc872625de3bdf14d00fda2",
+    "프로젝트 파이낸싱": "cab503707f333e119af11eabdd165f0c004baafcaca93d1ce2c5da4faf6fb8c3",
+    "프로젝트 한강": "f8b77c692c09996101659a1bab3bc959a8c02ac98a582ea4405ba328dcb04027",
+    "플라자 합의": "ead783832960fcd70198dafb733e6b31eb345f14634868c132b8009dfe096b2d",
+    "플랫폼 노동자": "b93d154b95809b81a680c4c8e6c1b4a679a0abf86af6cee803fbbe506d147529",
+    "피셔효과": "820058ad821f5584d6399231f8a705adb357a14967549d108612d823367a594a",
+    "피용자보수": "9acf686d1fe9a898e5d513d8ba076fd564101b90a657b3a0e0b88276e6e92869",
+    "피용자보수비율": "23aa92d0e068cbf8bd129e2038c580991a39b411d5bc5a0e2a393060f11f6a7e",
+    "핀테크": "9bb781d4c39f46315cfdb0728311ed95cbce017803cb054017f1571fd0e5b525",
+    "필립스곡선": "381fc42791d78938fd03f47b3fc50e460485e18add06b670f293e972f7c75d57",
+    "한계비용": "cee2ed575f608afcd270f2b92bccde6530da95fbfdc71d4395fb75527b2efc7c",
+    "한계소비성향": "dafdd1fa6775a4a807ff20bf1d1d4e1223e5ab3b9b22ab722433ccf64ec08a89",
+    "한계효용": "1a82dfa62a4ec6956b353300ac0291699ceeb269d47122218afb03ba9b0b866c",
+    "한국은행": "13aa6fcb259215d7944f4e0b503f9b23f10a48db975a1f43f8ca48bc5255dcd3",
+    "한시적 근로자": "d790360125c1a01f69cda61989a223da47be1aa04e9e6386f4ae1f2a51a9e40d",
+    "한은금융망(BOK-Wire+)": "a9011a4fcec5b2409c4050ba873ee4e74d9c484cbfef28783a8aae1697e90690",
+    "할당관세제도": "931b18d035f7ada8207f0a3525ed321f12d5a740e7075869f5d74db7f7adb009",
+    "합계출산율": "e9e6b0694b02ffed32c33e9fe65507d0f968ce55abe8777b806453354e9b4d5b",
+    "해외외국환업무취급기관(RFI)": "9526042e8ba9326de65b4b826c237a5f68b12d90bb6f1787c53916f821eed0e8",
+    "헤지펀드": "17728f8464daa511a18cbdfebcbc5f87d93b12e02449d395495f095bf1b90c9c",
+    "현금자동인출기(CD)공동망": "d9149255b7f7c55fbe2b26c194e2ea2a45572eda0858d0a3babb7b61bb9e5942",
+    "현시비교우위지수(RCA)": "295d6946c1de1727d6edd6ed0703568451732a251e9f48e7fd9be71eb9427138",
+    "현용화폐": "ce0c02b20b66ec282676a534d13c08d53aa3fedd2c773692e577ce7cc36ea27f",
+    "현지금융": "9292acb4ff310125078a848579049d631ff829cf969622efe232d2ae3edc8923",
+    "현지법인": "82226936ee1b5ca3fed72dd36f5087f8c34cfd3d2eb6ce7200a6f034068146dc",
+    "협의통화(M1)": "5196e86f02e4421d818c76625f75bdfdf3327e39e37d428b4c7a07e5ed51b5e2",
+    "혼합형결제시스템": "e31d4390579f765c98c38596d5799a02d5e603e85183153fa85f66f6632f78c1",
+    "홀로그램": "3ba0e4189cb77ad3de65324b6300b66a7b6ad269e7546d4a19ab0df4dbc1e072",
+    "화폐교환": "7f54c8311dc512864d52292641a527face11fb87af9ce7d26d177ecbe35f3319",
+    "화폐발행/화폐발행액": "736e323bcc55ca9c6e172a1ffeb6ef475a118637fed1aad9e2b5428098cc6e45",
+    "화폐의 액면체계": "19af3c599b63b30cc85bfda6a5c884beda8293b35adc0a2638ce2fa42632be26",
+    "화폐환수": "5e0273aaf0b935838e583454b761ddb4e368b142d82d63a8c6e5658b3c2cb479",
+    "환경계정": "b82a2cdb70055197b27b94df20002f5e952fa923fb90539dbf9de3771f1c2ff5",
+    "환경권": "f7f19a5260d0f1cac729175d41bd13756ef986c43969a7b8d6281d15e0a274a9",
+    "환리스크": "74f683d598bc26baf16ec6848888a1fb239bf949d9ac3394f987851236ab53aa",
+    "환리스크 헤지": "a6a4b0d2c31db1e739a49853be526d9281ab1a339e092c151865f77b395379d7",
+    "환매조건부매매/RP/Repo": "1528b285cf5b4b70f92de814298f12fa3aecfb2cdaa9ea34d05c202c1394456e",
+    "환어음": "1eb51c7164b92da94694a6bc005643880d891c625a951ce4b70702db3bec224e",
+    "환율조작국": "b614ad1a162e0194314ef59dd00844ef049eb138aa356aaffb8f88333cd78341",
+    "환전영업자(환전상)": "c78fbfa945eac193b165152b8478e9b58f737787000fd429bc03eca0f1ff2f97",
+    "환차손/환차익": "2170858644e371e35db73462824d635c8f288bd99b8b6d36593c8d725026e9de",
+    "회사채": "51dd844bff63efd4acafc6993072706c2bd3c947c10aa2ec5ed7809750a7d700",
+    "후방연쇄효과": "15070ccfbe5c991c79d6e02ed8079b56998761b9bfdba566462b69d569e3218c",
+    "후순위금융채": "a9904ced441ea57741165f56b3f9e106a764de5918b4b14cb6282343ae324095",
+    "후행종합지수": "bb712ec775e369005fe601b0da5a451958147908ae63d56bc5d2d4d0976bdadf",
+    "Beyond GDP": "457425aed57778ac6a372b917553657ccc5cbfbccdfb22206c85b3c9e006febb",
+    "BIS 자기자본비율": "d549d90810716a90f092ac9f11ca560df474de1c9ad407521861921128720ce5",
+    "CAMEL-IR 방식/ROCA 방식/CACREL 방식": "820d3228ec46229224fbb4bb1de390347439e23723ced8456222c19952eaf62b",
+    "CDS프리미엄": "3720c8c99c0b9fce196b6c95509c6b9f87c709247eee9beb99bbb08674a62929",
+    "CLS은행": "c3978355abe3a7e5063c3deb5e5b07be751a17312020e340b3b3d304ae4eb5ff",
+    "CMO": "ceeec8fb53a045c8abdfb8dd646c45aba5dc593ed100cbd19f1d3f2ea5994b4b",
+    "CVIX": "2707202029f99f8f1fbf01430b90605c7480fbb51d0b045489fe1e09a592a029",
+    "DebtRank": "72a89cdd18ae8073ce1af0800ffdcdd2293b53bd57c10309bb8dafdcbba99304",
+    "EC방식": "891805086d0a9413a7162bed4ac8b2335b8453aa8063d8f527ee045224e174d3",
+    "ESG경영": "0f8ad185b83661d89c497d8c8c2c7e9f070e7f79450cef85109a708e634eee31",
+    "ESTR": "9160cc2de7e238c08ffdf44deedfc42d2c5ffe9a7c2e4cf09788ae9d92f3d1c0",
+    "FedWatch": "ccbdb5cdffb8f3cfb23a21ab6afc94d8cd144086c52521fa396de55990badfde",
+    "FIMA Repo Facility": "fe8209a9031fa66d641fd59ccb74e73ace1f8383460e9d94918efa96dcdb80bd",
+    "FOMO현상": "f7c9ecd0c15d517647099006ae764ccd12a13a17e94c168eca4c4bffe7a93103",
+    "FTSE 지수": "8fd9dce66631953d2b1f455c31af32c361347189090c497bad0ed482c855d9ef",
+    "G2(Group of Two)": "52716b0834ce720e751f128976d6fd1a68f98ca1ca65b1aae4f7005fd457e07a",
+    "G7(Group of Seven)": "f9041d4a2ddba077a11b555ede85cdd84756844ddce1b04ba070f69967ec0e57",
+    "G20(Group of 20)": "ff5311bd1c104e054beb07bc1eeefed242ffaa79fa235ac7dd0f68ac7ac05dc9",
+    "GDP갭": "970c823e585839de5cbd2f1396835ea0e6f26ed9a5d906d7e01ff593066f70ce",
+    "GDP디플레이터": "7ffac150b347f0f463aef64e2cd52bf41b59839866362a6c430523d8d0e0894f",
+    "Herstatt 리스크": "2a0d42f6d2fb2ce16278a5e2fa21b07456e96c70a2df4ab6042a2595d767a0f3",
+    "IC카드": "0811fd3a3a04f0e00ab6e3a4ee69232dfbbd9e2313adbd3900c2b7f11467a675",
+    "IFRS17": "e5fca903c9a63cc585ecbea691872af578e9755161cec466d68363701b085263",
+    "IMF 스탠드바이협약": "5b90c3fefb874985b143ee94a6790d91dc62d9153e0598d0b60ea460cd99e02e",
+    "IMF 쿼타": "ced2f5c32f81e044858acbc26ca82952b69f7e47a0d3b101063b34091ac00d6a",
+    "J커브효과": "a3a0b6ee532a0b907b4f554f4ae9f9462859ff3fbeb11c05dc39d0645f9a621f",
+    "KIKO": "221ad8a86cfb55e0ecec511db9abc1236c6547eec208edb5162780f8b6022b32",
+    "KP스프레드": "7baf361c5ba688b24cd6b0be298f86516d9001cf233638c66986ad296170a76a",
+    "M&A": "c7ddd816ce6262fa45b1f7000330699d81ccaf3284aef6aabd4ae7b598b51df0",
+    "MOVE": "96d5afb76a677c2de05b9f5a570cccdece146ae96177e58437cec1a3ca523ef4",
+    "MSCI 지수": "49088180821cbeff86e575865eb57be74900499e65ea04502062cabadc635688",
+    "N-B SRS": "1bb23bba4b53b755a85ea3eb7301004353a4d99c24b64f5d1e136c4c791dd3f7",
+    "NFC(Near Field Communication) 기술": "04c3358851045ce5d41dfb45f513c93b097463b1cd09be4ad3d53bdb0163015d",
+    "Nowcasting": "306689d139af72106dc2b6c9f237a4e0cab72a49917d07b949d66647b5ba7547",
+    "OIS": "10c21be05a6b2687c3b65dc0365b6472db59a0820ed17815a2034cfa3764841b",
+    "P2P대출": "e72439e9aac64b9637b928d27bda1703a3f8fb8c81f2abae5c28a83b70edb5bf",
+    "P-CBO(Primary Collateralized Bond Obligation)": "c558116d39b81cce678420fdd3664fb84a93c1e0bff33aa373445f780296e5f6",
+    "PF-ABCP": "97ee227b09833ccb067c412976a5543f033fa1a6492d3737f4434297ed22e0d1",
+    "SOFR": "99f1b8abbaa097a83ff47c8bb18fdcecf4f91cbe481405d6994da9697d755bdc",
+    "SWIFT": "d003b3ea9b94e6aefe8f510b0cb18b3fa5f7ac93bf4c238bfce2f9271892b25c",
+    "Treasury Bill(T/B)": "11fc4b2b2f4e97f9a1f38d0065345cc4d259efe7952b9c9ea05a834d51136945",
+    "VAN사업자": "f20c4a0b5d96eedb097227c768243b3fddeeb5935d0435cf934aeb31c4b0f2c1",
+    "VaR(Value at Risk)": "f06e183505855e99ad548a8d2017f19be097dd3742d96f28dec1260dce9f505a",
+    "VIX Index": "0b5dcb56099baa3cb0c817086ed52512e450072dd1b5c3b4639c5ec40d76595b",
+    "V-KOSPI": "e7dd0499d12649fded6e004adf5ff1a32333e63716ce980a16fa34ca19f80eda"
+  }
+}
