@@ -7,15 +7,14 @@
 
 ### MONOW AI ###
 
-# Original PDF
-data/source/*.pdf
-*:Zone.Identifier
-
 # Generated JSON
 data/output/
 
 # Debug outputs
 data/debug/
+
+data/source/2026_경제금융용어 800선.pdf:Zone.Identifier
+data/source/2026_경제금융용어 800선.pdf
 
 # Test reference data
 !data/debug/legacy_results/
@@ -166,9 +165,6 @@ data/source/*.pdf
 
 # Windows download metadata
 *:Zone.Identifier
-
-# Generated glossary and validation results
-data/output/
 
 # Temporary files and logs
 *.log
