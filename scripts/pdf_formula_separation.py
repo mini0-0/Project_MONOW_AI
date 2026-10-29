@@ -1,9 +1,3 @@
-"""검토 대상 일반 산식 36개의 원문 구간·좌표·계산 구조를 검증해 분리한다.
-
-선택 규칙은 이 판본의 원문 경계만 지정한다. 수식 문자열을 생성하거나
-원본 설명을 수정하지 않으며, 한 항목의 검증 실패 시 그 항목 전체를 보류한다.
-"""
-
 from collections import Counter
 import hashlib
 from pathlib import Path
@@ -71,7 +65,7 @@ class FormulaSeparationError(ValueError):
 
 
 def parse_structure(expression: str) -> dict:
-    """그룹·음수·사칙연산·등식/첨자 표기를 보존하는 검증용 트리. 계산하지 않는다."""
+    """음수,사칙연산,등식/첨자 표기를 보존하는 검증용 트리, 계산하지 않는다."""
     opens = {"(": ")", "[": "]", "{": "}", "〔": "〕"}
     closes = set(opens.values())
     operators = {"=": 0, "≒": 0, "≠": 0, "≤": 0, "≥": 0,
@@ -144,7 +138,6 @@ def _select_span(definition: str, pattern: str) -> tuple[int, int]:
 
 
 def read_expression(term: Term, glyphs: list[dict], start: int, end: int) -> dict:
-    """원문 구간을 실제 PDF 글자로 다시 읽고 명시적으로 작은 아래 첨자만 표시한다."""
     selected = [g for g in glyphs if start <= g["index"] < end]
     if not selected:
         raise FormulaSeparationError("선택 구간의 PDF 글자가 없습니다")
@@ -216,4 +209,4 @@ def separate_general_formulas(pdf_path: str | Path, terms: list[Term]) -> tuple[
                     "success_term_count": sum(item["status"] == "verified" for item in outcomes),
                     "failed_term_count": sum(item["status"] == "needs_review" for item in outcomes),
                     "formula_count": sum(len(items) for items in result.values()), "terms": outcomes,
-                    "scope": "대상36개 용어의 명시적 산식·성분 관계만 분리. 별도 관계식/예시/보류 대상 용어는 제외"}
+                    "scope": "대상36개 용어의 명시적 산식,성분 관계만 분리. 별도 관계식/예시/보류 대상 용어는 제외"}

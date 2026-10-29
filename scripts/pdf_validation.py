@@ -1,5 +1,3 @@
-"""현재 2026년 판본의 목차 대조, 원문 보존 검사, 수동 검토 후보 보고."""
-
 from collections import Counter
 from contextlib import redirect_stdout
 import json
@@ -53,7 +51,6 @@ def _anchors(document) -> list[dict]:
 
 
 def _regions(document, anchors, index):
-    """제목 직후부터 다음 제목 직전까지 페이지별 본문 사각형을 만든다."""
     anchor = anchors[index]
     following = anchors[index + 1] if index + 1 < len(anchors) else None
     last_page = following["pdf_page"] if following else 423
@@ -243,7 +240,6 @@ def validate_extraction(pdf_path, terms: list[Term], scope="all") -> dict:
 
 
 def write_results(output_dir, terms: list[Term], report: dict, scope="all") -> None:
-    """원문/정제 데이터, 검증 보고서, 수동 검토 목록을 각각 저장한다."""
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     prefix = "all_terms" if scope == "all" else "terms"
@@ -260,7 +256,6 @@ def write_results(output_dir, terms: list[Term], report: dict, scope="all") -> N
 
 
 def format_report(report: dict) -> str:
-    """검증 결과와 수동 검토 대상 전체를 사람이 읽을 수 있는 보고서로 만든다."""
     summary = report["summary"]
     lines = ["# 전체 경제금융용어 추출 결과", "",
              f"- 추출: {summary['extracted_count']}개 / 목차: {summary['toc_count']}개",

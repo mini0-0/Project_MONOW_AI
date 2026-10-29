@@ -1,5 +1,3 @@
-"""검증된 복원 결과를 적용한 적재용 JSON 생성. DB에 연결하지 않는다."""
-
 from collections import Counter
 import hashlib
 import json
@@ -25,7 +23,6 @@ def _compact(text: str) -> str:
 
 
 def prepare_definition(text: str) -> str:
-    """기존 조판 정제를 적용하고 남은 문단/공백을 한 칸으로 연결한다."""
     return re.sub(r"\s+", " ", clean_definition(text)).strip()
 
 
@@ -79,7 +76,6 @@ def classify_review(record: dict, raw_record: dict, decisions: dict,
 
 def build_glossary(pdf_path: str | Path = DEFAULT_PDF,
                    targets: tuple[str, ...] | None = None) -> tuple[list[dict], dict, dict]:
-    """추출→선택적 복원→최종 필드 축약→내용 보존/품질 검증을 수행한다."""
     terms = extract_terms(pdf_path, targets=targets)
     enriched, formula_report = enrich_formulas(pdf_path, terms)
     separated, separation_report = separate_general_formulas(pdf_path, terms)

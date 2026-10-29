@@ -1,9 +1,3 @@
-"""검토를 마친 2026년 판본의 8개 용어에 대한 선택적 수식 복원.
-
-원본 정의는 변경하지 않는다. 확인된 영역에서 PDF 분수선과 글자 좌표를 읽으며,
-판본/수식 구조가 달라지면 추정하는 대신 오류를 낸다.
-"""
-
 from collections import Counter
 from dataclasses import dataclass
 import hashlib
@@ -336,7 +330,6 @@ def write_formula_results(output_dir, records: list[dict], report: dict, *, scop
                             (f"{prefix}_formula_validation.json", report)]:
         (output_dir / filename).write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n",
                                           encoding="utf-8")
-    # 원본 수식 영역과 복원 MathML을 나란히 확인할 수 있는 정적 검토 파일.
     evidence_dir = output_dir / f"{prefix}_formula_evidence"
     evidence_dir.mkdir(exist_ok=True)
     cards = []

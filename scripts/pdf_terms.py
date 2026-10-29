@@ -1,5 +1,3 @@
-"""2026 경제금융용어 800선 전체 또는 PER/PBR/EPS 추출 (DB 및 API와 독립)."""
-
 import argparse
 from dataclasses import asdict, dataclass
 import json
@@ -68,7 +66,6 @@ def clean_definition(text: str) -> str:
 
 
 def iter_content_lines(page):
-    """본문 영역의 줄을 위치순으로 반환. 머리말, 쪽번호, 바깥쪽 색인은 제외."""
     lines = [
         line
         for block in page.get_text("dict")["blocks"]
