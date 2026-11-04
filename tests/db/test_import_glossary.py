@@ -23,21 +23,21 @@ class ImportValidationTests(unittest.TestCase):
     def setUpClass(cls):
         cls.records = load_glossary()
 
-    def test_original_789_records_and_nested_expressions_not_modified(self):
+    def test_given_789_records_when_validated_then_fields_are_unchanged(self):
         original = deepcopy(self.records)
         validate_records(self.records)
         self.assertEqual(len(self.records), 789)
         self.assertEqual(sum(len(r["formulas"]) for r in self.records), 59)
         self.assertEqual(self.records, original)
 
-    def test_count_and_duplicate_terms_rejected(self):
+    def test_given_wrong_count_or_duplicates_when_loaded_then_rejected(self):
         with self.assertRaisesRegex(ValueError, "789"):
             validate_records(self.records[:-1])
         records = [self.records[0], self.records[0]]
         with self.assertRaisesRegex(ValueError, "중복 term"):
             validate_records(records, expected_count=2)
 
-    def test_invalid_fields_values_and_nested_data_rejected(self):
+    def test_given_invalid_fields_when_validated_then_rejected(self):
         for field, value in (("definition", " "), ("term", "a\x00b"),
                              ("formulas", [{"expression": "x", "type": "formula"}]),
                              ("formulas", [{"expression": ""}]), ("formulas", None),
@@ -53,12 +53,12 @@ class ImportValidationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate_records([record], expected_count=1)
 
-    def test_unknown_book_page_kept_as_null(self):
+    def test_given_unknown_book_page_when_loaded_then_null_is_preserved(self):
         record = dict(self.records[0], source_book_page=None)
         validate_records([record], expected_count=1)
         self.assertIsNone(record["source_book_page"])
 
-    def test_duplicate_json_keys_and_malformed_json_rejected(self):
+    def test_given_duplicate_keys_when_loaded_then_json_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "input.json"
             for content in ('[{"term":"a","term":"b"}]', '{bad json'):
@@ -66,7 +66,7 @@ class ImportValidationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     load_glossary(path)
 
-    def test_env_password_special_characters_and_environment_precedence(self):
+    def test_given_env_overrides_when_loaded_then_password_is_preserved(self):
         with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {}, clear=True):
             env = Path(directory) / ".env"
             env.write_text("DB_HOST=localhost\nDB_PORT=5432\nDB_NAME=monow_ai\n"
@@ -78,7 +78,7 @@ class ImportValidationTests(unittest.TestCase):
             with patch.dict(os.environ, {"DB_HOST": "override"}):
                 self.assertEqual(database_url(env).host, "override")
 
-    def test_missing_configuration_and_invalid_port_rejected(self):
+    def test_given_invalid_config_when_loaded_then_error_is_raised(self):
         with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {}, clear=True):
             env = Path(directory) / ".env"
             env.write_text("DB_NAME=monow_ai\n")
@@ -89,7 +89,7 @@ class ImportValidationTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "DB_PORT"):
                     database_url(env)
 
-    def test_development_and_other_db_names_rejected_in_tests(self):
+    def test_given_development_db_when_tested_then_connection_is_blocked(self):
         for name in ("monow", "monow_ai", "postgres", "monow_ai_testx", None):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 validate_database_name(name, testing=True)
@@ -100,7 +100,9 @@ class ImportValidationTests(unittest.TestCase):
         validate_database_name("monow_ai_test", testing=True)
         validate_database_name("monow_ai_test_local", testing=True)
 
-    def test_wrong_database_rejected_before_transaction(self):
+    def test_given_wrong_db_when_imported_then_transaction_is_not_started(
+        self,
+    ):
         engine = Mock()
         engine.dialect.name = "postgresql"
         engine.url.database = "monow"
@@ -110,7 +112,7 @@ class ImportValidationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             create_database_engine("sqlite://")
 
-    def test_cli_failure_returns_nonzero_without_connecting(self):
+    def test_given_invalid_cli_config_when_run_then_exit_code_is_nonzero(self):
         with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {}, clear=True):
             env = Path(directory) / ".env"
             env.write_text("DB_NAME=monow_ai\n")
@@ -155,20 +157,20 @@ class PostgreSQLImportTests(unittest.TestCase):
         with self.engine.connect() as connection:
             return {row["term"]: dict(row) for row in connection.execute(select(GlossaryTerm.__table__)).mappings()}
 
-    def test_full_789_import_and_every_json_field_matches(self):
+    def test_given_789_records_when_imported_then_all_fields_match(self):
         result = import_glossary(self.engine, self.records, testing=True)
         self.assertEqual(result, {"source_count": 789, "written_count": 789,
                                   "verified_count": 789, "total_count": 789})
         self.assertEqual(self.stored(), {r["term"]: r for r in self.records})
 
-    def test_repeat_import_has_no_duplicates_or_unnecessary_updates(self):
+    def test_given_same_records_when_reimported_then_no_rows_are_changed(self):
         import_glossary(self.engine, self.records, testing=True)
         result = import_glossary(self.engine, self.records, testing=True)
         self.assertEqual(result["written_count"], 0)
         self.assertEqual(result["total_count"], 789)
         self.assertEqual(self.stored(), {r["term"]: r for r in self.records})
 
-    def test_upsert_updates_all_six_non_key_fields(self):
+    def test_given_changed_records_when_upserted_then_six_fields_update(self):
         import_glossary(self.engine, self.records, testing=True)
         changed = deepcopy(self.records)
         changed[0].update(definition="갱신 테스트: π_t^* × ∑x ≒ a÷b",
@@ -179,7 +181,7 @@ class PostgreSQLImportTests(unittest.TestCase):
         self.assertEqual(result["total_count"], 789)
         self.assertEqual(self.stored(), {r["term"]: r for r in changed})
 
-    def test_existing_terms_not_in_source_are_not_deleted(self):
+    def test_given_extra_db_terms_when_imported_then_rows_are_preserved(self):
         extra = dict(self.records[0], term="격리된 테스트용 기존 용어")
         import_glossary(self.engine, [extra], expected_count=1, testing=True)
         result = import_glossary(self.engine, self.records, testing=True)
@@ -187,7 +189,9 @@ class PostgreSQLImportTests(unittest.TestCase):
         self.assertEqual(result["total_count"], 790)
         self.assertEqual(self.stored()[extra["term"]], extra)
 
-    def test_late_database_failure_rolls_back_prior_inserts_and_updates(self):
+    def test_given_late_db_failure_when_imported_then_all_writes_rollback(
+        self,
+    ):
         seed = dict(self.records[0], definition="실패 후에도 보존될 기존 설명")
         import_glossary(self.engine, [seed], expected_count=1, testing=True)
         self.assertEqual(self.records[-1]["term"], "V-KOSPI")
@@ -200,7 +204,7 @@ class PostgreSQLImportTests(unittest.TestCase):
             import_glossary(self.engine, self.records, testing=True)
         self.assertEqual(self.stored(), {seed["term"]: seed})
 
-    def test_comparison_mismatch_rolls_back_table_and_all_rows(self):
+    def test_given_mismatch_when_verified_then_rows_and_table_rollback(self):
         original_verify = verify_records
 
         def mismatch(connection, records):

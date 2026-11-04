@@ -11,7 +11,7 @@ if __package__ in (None, ""):
 import pymupdf
 
 
-from scripts.paths import DEFAULT_PDF, DEBUG_DIR, OUTPUT_DIR
+from pdf.paths import DEFAULT_PDF, DEBUG_DIR, OUTPUT_DIR
 TARGETS = ("주가수익비율(PER)", "주가순자산비율(PBR)", "주당순이익(EPS)")
 TITLE_FONTS = {"SUIT-ExtraBold", "DIN-Bold"}
 
@@ -171,7 +171,7 @@ def main():
     if args.terms:
         aliases = dict(zip(("PER", "PBR", "EPS"), TARGETS))
         targets = tuple(dict.fromkeys(aliases.get(term.upper(), term) for term in args.terms))
-    from scripts.glossary import build_glossary, write_outputs
+    from pdf.glossary import build_glossary, write_outputs
     glossary, report, debug_data = build_glossary(args.pdf, targets=targets)
     write_outputs(args.output_dir, glossary, report,
                   debug_data=debug_data if args.debug else None,

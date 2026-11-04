@@ -7,7 +7,7 @@ import sys
 
 import pymupdf
 
-from scripts.pdf_terms import (Term, clean_definition, is_term_title, iter_content_lines,
+from pdf.extractor import (Term, clean_definition, is_term_title, iter_content_lines,
                        pdf_to_book_page)
 
 

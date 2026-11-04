@@ -11,12 +11,12 @@ import xml.etree.ElementTree as ET
 
 import pymupdf
 
-from scripts.paths import LEGACY_DIR, PROJECT_ROOT
+from pdf.paths import LEGACY_DIR, PROJECT_ROOT
 
-from scripts.pdf_formulas import (PDF_SHA256, REGIONS, FormulaRestorationError, definition_glyphs,
+from pdf.parser import (PDF_SHA256, REGIONS, FormulaRestorationError, definition_glyphs,
                           enrich_formulas, linear_nodes, render_text, restore_region,
                           write_formula_results)
-from scripts.pdf_terms import DEFAULT_PDF, TARGETS, extract_terms
+from pdf.extractor import DEFAULT_PDF, TARGETS, extract_terms
 
 
 # PDF 원본 화면을 직접 대조하여 작성한 기준. 추출 함수의 출력에서 생성하지 않는다.
@@ -72,19 +72,19 @@ class FormulaTests(unittest.TestCase):
         cls.records, cls.report = enrich_formulas(DEFAULT_PDF, cls.original)
         cls.by_title = {record["term"]: record for record in cls.records}
 
-    def test_eight_terms_nine_equations_thirteen_fractions(self):
+    def test_given_eight_terms_when_restored_then_nine_equations_match(self):
         self.assertEqual(self.report["restored_term_count"], 8)
         self.assertEqual(self.report["equation_count"], 9)
         self.assertEqual(self.report["fraction_count"], 13)
         self.assertEqual({r["term"] for r in self.records if r["formulas"]}, set(REGIONS))
 
-    def test_equation_order_operators_and_numbers_match_visual_references(self):
+    def test_given_reference_equations_when_restored_then_symbols_match(self):
         for title, expected in REFERENCE_EQUATIONS.items():
             with self.subTest(term=title):
                 self.assertEqual([compact(item["text"]) for item in self.by_title[title]["formulas"]],
                                  [compact(text) for text in expected])
 
-    def test_each_numerator_and_denominator_match_source_reference(self):
+    def test_given_source_fractions_when_restored_then_both_parts_match(self):
         for title, expected in REFERENCE_FRACTIONS.items():
             with self.subTest(term=title):
                 fractions = [node for item in self.by_title[title]["formulas"]
@@ -93,7 +93,9 @@ class FormulaTests(unittest.TestCase):
                           for node in fractions]
                 self.assertEqual(actual, [(compact(n), compact(d)) for n, d in expected])
 
-    def test_taylor_scripts_and_all_five_pi_glyphs_restored(self):
+    def test_given_taylor_formula_when_restored_then_scripts_and_pi_match(
+        self,
+    ):
         record = self.by_title["테일러 준칙(Taylor’s Rule)"]
         self.assertEqual(record["definition"].count("\uf0bc"), 5)
         self.assertNotIn("\uf0bc", record["definition_with_formulas"])
@@ -104,14 +106,18 @@ class FormulaTests(unittest.TestCase):
                          [("i", "t", None), ("r", "t", "*"), ("π", "t", None),
                           ("π", "t", None), ("π", "t", "*"), ("y", "t", None)])
 
-    def test_original_789_records_and_input_objects_preserved(self):
+    def test_given_789_raw_records_when_restored_then_inputs_are_unchanged(
+        self,
+    ):
         baseline = json.loads(LEGACY_DIR.joinpath("all_terms_raw.json").read_text())
         self.assertEqual([term.to_dict() for term in self.original], baseline)
         for record, term in zip(self.records, self.original):
             for key, value in term.to_dict().items():
                 self.assertEqual(record[key], value)
 
-    def test_remaining_781_terms_and_three_term_selection_unchanged(self):
+    def test_given_outside_targets_when_restored_then_records_are_unchanged(
+        self,
+    ):
         unchanged = [record for record in self.records if not record["formulas"]]
         self.assertEqual(len(unchanged), 781)
         for record in unchanged:
@@ -121,7 +127,9 @@ class FormulaTests(unittest.TestCase):
         self.assertEqual(report["restored_term_count"], 0)
         self.assertEqual([r["term"] for r in enriched], list(TARGETS))
 
-    def test_characters_outside_selected_regions_preserved(self):
+    def test_given_formula_regions_when_restored_then_outside_text_is_kept(
+        self,
+    ):
         for title in REGIONS:
             record = self.by_title[title]
             parts = record["formulas"] + record["formula_annotations"]
@@ -133,7 +141,9 @@ class FormulaTests(unittest.TestCase):
                 remainder = remainder.replace(part["text"], "", 1)
             self.assertEqual(compact(remainder), compact(expected), title)
 
-    def test_mathml_fraction_and_script_structure(self):
+    def test_given_fraction_scripts_when_rendered_then_mathml_structure_matches(
+        self,
+    ):
         total_fractions = 0
         for record in self.records:
             for item in record["formulas"] + record["formula_annotations"]:
@@ -143,7 +153,9 @@ class FormulaTests(unittest.TestCase):
         taylor = self.by_title["테일러 준칙(Taylor’s Rule)"]["formulas"][0]["mathml"]
         self.assertEqual(len(ET.fromstring(taylor).findall(".//msubsup")), 2)
 
-    def test_no_unprinted_times_100_and_footnotes_retained(self):
+    def test_given_source_formulas_when_restored_then_no_times_100_invented(
+        self,
+    ):
         self.assertNotIn("100", self.by_title["경제성장률"]["formulas"][0]["text"])
         record = self.by_title["매출액영업이익률"]
         self.assertIn("* 매출총소익 = 매출액 - 매출원가", record["definition_with_formulas"])
@@ -151,19 +163,21 @@ class FormulaTests(unittest.TestCase):
         self.assertIn("* 보합: -0.05% < 증감률 < 0.05%",
                       self.by_title["생산확산지수"]["definition_with_formulas"])
 
-    def test_wrong_edition_rejected_before_generating_guessed_content(self):
+    def test_given_unknown_edition_when_restored_then_content_is_not_guessed(
+        self,
+    ):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "other.pdf"
             path.write_bytes(DEFAULT_PDF.read_bytes() + b"\n% modified\n")
             with self.assertRaisesRegex(FormulaRestorationError, "SHA-256"):
                 enrich_formulas(path, self.original)
 
-    def test_changed_definition_is_rejected(self):
+    def test_given_changed_definition_when_restored_then_rejected(self):
         term = next(term for term in self.original if term.term == "경제성장률")
         with self.assertRaisesRegex(FormulaRestorationError, "원본 정의"):
             enrich_formulas(DEFAULT_PDF, [replace(term, definition=term.definition + "변경")])
 
-    def test_missing_denominator_rejected(self):
+    def test_given_missing_denominator_when_restored_then_rejected(self):
         term = next(term for term in self.original if term.term == "경제성장률")
         region = REGIONS[term.term][0]
         with pymupdf.open(DEFAULT_PDF) as document:
@@ -173,7 +187,7 @@ class FormulaTests(unittest.TestCase):
             with self.assertRaisesRegex(FormulaRestorationError, "분자 또는 분모"):
                 restore_region(document[32], region, without_denominator)
 
-    def test_missing_fraction_bar_rejected(self):
+    def test_given_missing_fraction_line_when_restored_then_rejected(self):
         term = next(term for term in self.original if term.term == "경제성장률")
         with pymupdf.open(DEFAULT_PDF) as document:
             glyphs = definition_glyphs(document, term)
@@ -183,13 +197,17 @@ class FormulaTests(unittest.TestCase):
             with self.assertRaisesRegex(FormulaRestorationError, "분수선"):
                 restore_region(NoBars(), REGIONS[term.term][0], glyphs)
 
-    def test_private_use_mapping_requires_verified_math_font(self):
+    def test_given_private_glyph_when_restored_then_verified_font_is_required(
+        self,
+    ):
         glyph = {"c": "\uf0bc", "font": "OtherFont", "size": 10.5,
                  "bbox": (0, 0, 5, 10), "origin": (0, 8), "index": 0}
         with self.assertRaisesRegex(FormulaRestorationError, "전용영역"):
             linear_nodes([glyph], map_pi=True)
 
-    def test_json_and_html_export_preserve_existing_raw_file(self):
+    def test_given_existing_raw_file_when_exported_then_file_is_preserved(
+        self,
+    ):
         with tempfile.TemporaryDirectory() as directory:
             sentinel = Path(directory) / "all_terms_raw.json"
             sentinel.write_text("원본 유지")
@@ -201,10 +219,12 @@ class FormulaTests(unittest.TestCase):
             self.assertIn("<mfrac>", html)
             self.assertEqual(len(list((Path(directory) / "all_terms_formula_evidence").glob("*.png"))), 11)
 
-    def test_cli_restore_option_saves_all_789_without_overwriting_raw(self):
+    def test_given_restore_cli_when_run_then_789_raw_records_are_preserved(
+        self,
+    ):
         with tempfile.TemporaryDirectory() as directory:
             result = subprocess.run(
-                [sys.executable, str(PROJECT_ROOT / "scripts" / "pdf_terms.py"),
+                [sys.executable, str(PROJECT_ROOT / "pdf" / "extractor.py"),
                  "--restore-formulas", "--output-dir", directory],
                 text=True, capture_output=True, check=True)
             summary = json.loads(result.stdout)
