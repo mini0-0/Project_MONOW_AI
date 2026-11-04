@@ -8,13 +8,13 @@ import sys
 import tempfile
 import unittest
 
-from scripts.glossary import (FORMULA_FIELDS, GLOSSARY_FIELDS, build_glossary,
+from pdf.glossary import (FORMULA_FIELDS, GLOSSARY_FIELDS, build_glossary,
                               classify_review, prepare_definition, write_outputs)
-from scripts.paths import DEBUG_DIR, DEFAULT_PDF, LEGACY_DIR, PROJECT_ROOT, REVIEW_DECISIONS
-from scripts.pdf_formulas import REGIONS
-from scripts.pdf_formula_separation import FORMULA_PATTERNS
-from scripts.pdf_definition_corrections import correct_definition
-from scripts.pdf_terms import TARGETS
+from pdf.paths import DEBUG_DIR, DEFAULT_PDF, LEGACY_DIR, PROJECT_ROOT, REVIEW_DECISIONS
+from pdf.parser import REGIONS
+from pdf.formula_separator import FORMULA_PATTERNS
+from pdf.definition_corrections import correct_definition
+from pdf.extractor import TARGETS
 
 
 class GlossaryTests(unittest.TestCase):
@@ -23,7 +23,7 @@ class GlossaryTests(unittest.TestCase):
         cls.glossary, cls.report, cls.debug = build_glossary()
         cls.by_title = {record["term"]: record for record in cls.glossary}
 
-    def test_789_records_and_exact_service_schema(self):
+    def test_given_789_terms_when_exported_then_service_schema_matches(self):
         self.assertEqual(len(self.glossary), 789)
         self.assertTrue(all(set(record) == GLOSSARY_FIELDS for record in self.glossary))
         for record in self.glossary:
@@ -33,7 +33,9 @@ class GlossaryTests(unittest.TestCase):
         for key in ("ast", "mathml", "source_indices", "source_bbox", "source_text"):
             self.assertNotIn(f'"{key}"', serialized)
 
-    def test_original_definitions_preserved_separately(self):
+    def test_given_original_definitions_when_exported_then_raw_is_preserved(
+        self,
+    ):
         baseline = json.loads((LEGACY_DIR / "all_terms_raw.json").read_text())
         self.assertEqual(self.report["original_records"], baseline)
         self.assertTrue(self.report["checks"]["original_records_match_baseline"])
@@ -41,7 +43,9 @@ class GlossaryTests(unittest.TestCase):
             self.assertNotIn("\n", record["definition"])
             self.assertNotIn("\r", record["definition"])
 
-    def test_restored_content_and_all_other_characters_preserved(self):
+    def test_given_restored_content_when_exported_then_characters_are_kept(
+        self,
+    ):
         compact = lambda text: re.sub(r"\s", "", text)
         decisions = json.loads(REVIEW_DECISIONS.read_text())
         raw = {item["term"]: item for item in self.report["original_records"]}
@@ -50,7 +54,7 @@ class GlossaryTests(unittest.TestCase):
             self.assertEqual(record["definition"], expected)
         self.assertTrue(self.report["checks"]["outside_formula_characters_preserved"])
 
-    def test_eight_restored_terms_nine_formulas_and_actual_source_pages(self):
+    def test_given_eight_restored_terms_when_exported_then_pages_match(self):
         restored = [record for record in self.glossary if record["formulas"]]
         self.assertEqual({record["term"] for record in restored}, set(REGIONS) | set(FORMULA_PATTERNS))
         self.assertEqual(sum(len(record["formulas"]) for record in restored), 59)
@@ -68,7 +72,7 @@ class GlossaryTests(unittest.TestCase):
         self.assertEqual(internal["formulas"][0]["source_book_page"], 90)
         self.assertEqual(self.by_title[TARGETS[0]]["formulas"], [])
 
-    def test_formulas_replace_original_position_and_taylor_private_characters(self):
+    def test_given_taylor_formula_when_restored_then_pi_is_preserved(self):
         growth = self.by_title["경제성장률"]
         definition = growth["definition"]
         equation = growth["formulas"][0]["expression"]
@@ -80,7 +84,9 @@ class GlossaryTests(unittest.TestCase):
         self.assertNotIn("\uf0bc", taylor["definition"])
         self.assertIn("π_t^*: 물가목표", taylor["definition"])
 
-    def test_review_states_keep_errors_and_unreviewed_data_distinct(self):
+    def test_given_review_findings_when_classified_then_states_are_distinct(
+        self,
+    ):
         self.assertEqual(Counter(record["review_status"] for record in self.glossary),
                          {"verified": 83, "automated_checks_passed": 704, "needs_review": 2})
         for term in ("서킷브레이커", "죄수의 딜레마", "BIS 자기자본비율", "한계비용", "IFRS17"):
@@ -90,13 +96,17 @@ class GlossaryTests(unittest.TestCase):
         self.assertEqual(self.report["summary"]["unresolved_error_term_count"], 0)
         self.assertEqual(self.by_title[TARGETS[0]]["review_status"], "automated_checks_passed")
 
-    def test_unknown_characters_not_silently_corrected(self):
+    def test_given_special_characters_when_exported_then_raw_is_preserved(
+        self,
+    ):
         self.assertNotIn("\xad", self.by_title["한계비용"]["definition"])
         self.assertNotIn("\u200b", self.by_title["IFRS17"]["definition"])
         raw = next(record for record in self.report["original_records"] if record["term"] == "한계비용")
         self.assertIn("\xad", raw["definition"])
 
-    def test_reviewed_tables_keep_row_column_and_cumulative_ratio_relations(self):
+    def test_given_reviewed_tables_when_restored_then_cell_relations_match(
+        self,
+    ):
         circuit = self.by_title["서킷브레이커"]["definition"]
         self.assertIn("1단계 | 전일 대비 8% 이상 하락 | 20분간 매매거래중단", circuit)
         self.assertIn("2단계2) | 전일 대비 15% 이상 하락, 1단계 서킷브레이커 발동시점 대비 1% 이상 추가 하락 | 20분간 매매거래중단", circuit)
@@ -110,7 +120,7 @@ class GlossaryTests(unittest.TestCase):
                          "기타 기본자본(AT 1): 10.5%", "보완자본(Tier 2): 12.5%"):
             self.assertIn(expected, bis)
 
-    def test_reviewed_annotation_graph_controls_and_subtraction(self):
+    def test_given_annotations_when_restored_then_symbols_match(self):
         self.assertIn("순생산액(순소득) = 총생산액(총소득)(= 산출액 - 중간투입액) - 고정자본소모",
                       self.by_title["고정자본소모"]["definition"])
         self.assertIn("10,080원 − 10,000원 = 80원", self.by_title["한계비용"]["definition"])
@@ -124,7 +134,9 @@ class GlossaryTests(unittest.TestCase):
         self.assertIn("고정자본소모)", savings["definition"])
         self.assertEqual(savings["review_status"], "needs_review")
 
-    def test_corrections_audit_exact_spans_and_fail_closed(self):
+    def test_given_correction_spans_when_checked_then_failures_stay_closed(
+        self,
+    ):
         corrections = self.report["service_definition_corrections"]
         self.assertEqual(len(corrections), 9)
         self.assertEqual(sum(c["status"] == "verified" for c in corrections), 7)
@@ -148,7 +160,7 @@ class GlossaryTests(unittest.TestCase):
         self.assertEqual(text, altered)  # 첫 수정 성공 후 두 번째 실패해도 부분 적용하지 않는다.
         self.assertFalse(result["applied"])
 
-    def test_normal_output_is_exactly_two_json_files(self):
+    def test_given_normal_export_when_written_then_only_two_files_exist(self):
         existing_debug = {str(path) for path in DEBUG_DIR.rglob("*") if path.is_file()}
         with tempfile.TemporaryDirectory() as directory:
             out, debug = Path(directory) / "out", Path(directory) / "debug"
@@ -158,7 +170,7 @@ class GlossaryTests(unittest.TestCase):
             self.assertEqual(json.loads((out / "glossary.json").read_text()), self.glossary)
         self.assertEqual(existing_debug, {str(path) for path in DEBUG_DIR.rglob("*") if path.is_file()})
 
-    def test_debug_export_keeps_internal_recovery_data_outside_output(self):
+    def test_given_debug_export_when_written_then_details_stay_outside(self):
         with tempfile.TemporaryDirectory() as directory:
             out, debug = Path(directory) / "out", Path(directory) / "debug"
             write_outputs(out, self.glossary, self.report, debug_data=self.debug, debug_dir=debug)
@@ -170,7 +182,9 @@ class GlossaryTests(unittest.TestCase):
             self.assertTrue((debug / "all_terms_formula_comparison.html").exists())
             self.assertEqual(len(list((debug / "all_terms_formula_evidence").glob("*.png"))), 11)
 
-    def test_debug_directory_cannot_pollute_normal_output(self):
+    def test_given_nested_debug_path_when_written_then_export_is_rejected(
+        self,
+    ):
         with tempfile.TemporaryDirectory() as directory:
             out = Path(directory) / "out"
             for debug in (out, out / "debug"):
@@ -178,11 +192,13 @@ class GlossaryTests(unittest.TestCase):
                     write_outputs(out, self.glossary, self.report, debug_data=self.debug, debug_dir=debug)
             self.assertFalse(out.exists())
 
-    def test_individual_term_cli_works_from_other_working_directory(self):
+    def test_given_other_cwd_when_cli_runs_then_selected_term_is_exported(
+        self,
+    ):
         with tempfile.TemporaryDirectory() as directory:
             out = Path(directory) / "out"
             result = subprocess.run(
-                [sys.executable, str(PROJECT_ROOT / "scripts" / "pdf_terms.py"),
+                [sys.executable, str(PROJECT_ROOT / "pdf" / "extractor.py"),
                  "--terms", "PBR", "--output-dir", str(out)],
                 cwd=directory, capture_output=True, text=True, check=True)
             records = json.loads(result.stdout)
@@ -191,7 +207,9 @@ class GlossaryTests(unittest.TestCase):
             self.assertEqual((records[0]["source_pdf_page"], records[0]["source_book_page"]), (310, 292))
             self.assertEqual(json.loads((out / "glossary.json").read_text()), records)
 
-    def test_changed_raw_record_is_never_automatically_verified(self):
+    def test_given_changed_raw_record_when_checked_then_not_auto_verified(
+        self,
+    ):
         record = deepcopy(next(record for record in self.debug["enriched"] if record["term"] == "경제성장률"))
         raw = next(record for record in self.report["original_records"] if record["term"] == "경제성장률").copy()
         raw["definition"] += "임의 변경"

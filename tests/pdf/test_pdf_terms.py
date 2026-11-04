@@ -4,9 +4,9 @@ import unittest
 
 import pymupdf
 
-from scripts.paths import LEGACY_DIR, PROJECT_ROOT
+from pdf.paths import LEGACY_DIR, PROJECT_ROOT
 
-from scripts.pdf_terms import (DEFAULT_PDF, TARGETS, clean_definition, extract_terms,
+from pdf.extractor import (DEFAULT_PDF, TARGETS, clean_definition, extract_terms,
                        is_term_title, iter_content_lines, pdf_to_book_page,
                        split_related_terms)
 
@@ -25,17 +25,19 @@ class ActualPDFTests(unittest.TestCase):
             print(f"\n[DB 저장용 데이터 확인 · {label} · {len(records)}건]", flush=True)
             print(json.dumps(records, ensure_ascii=False, indent=2), flush=True)
 
-    def test_three_titles_and_source_pages(self):
+    def test_given_three_terms_when_extracted_then_titles_and_pages_match(
+        self,
+    ):
         self.assertEqual(set(self.terms), set(TARGETS))
         self.assertEqual([self.terms[t].source_pdf_page for t in TARGETS], [310, 310, 313])
 
-    def test_pdf_and_book_page_pairs(self):
+    def test_given_pdf_pages_when_converted_then_book_page_pairs_match(self):
         for title, expected in zip(TARGETS, [(310, 292), (310, 292), (313, 295)]):
             with self.subTest(term=title):
                 term = self.terms[title]
                 self.assertEqual((term.source_pdf_page, term.source_book_page), expected)
 
-    def test_conversion_matches_printed_body_page_numbers(self):
+    def test_given_body_pages_when_converted_then_printed_numbers_match(self):
         # 변환식과 독립적으로 본문 전체 405쪽 하단에 실제 인쇄된 숫자와 대조한다.
         with pymupdf.open(DEFAULT_PDF) as document:
             for pdf_page in range(19, 424):
@@ -46,7 +48,9 @@ class ActualPDFTests(unittest.TestCase):
                     )).strip()
                     self.assertEqual(str(pdf_to_book_page(pdf_page)), printed)
 
-    def test_complete_body_against_independently_selected_pdf_regions(self):
+    def test_given_selected_regions_when_extracted_then_full_body_matches(
+        self,
+    ):
         # 실제 PDF를 대조해 고정한 본문 사각형. 제목 판별 코드를 쓰지 않는 별도 기준이다.
         regions = {
             TARGETS[0]: [(310, 230, 470)],
@@ -63,7 +67,7 @@ class ActualPDFTests(unittest.TestCase):
                     actual = self.terms[title].definition
                     self.assertEqual(re.sub(r"\s", "", actual), re.sub(r"\s", "", expected))
 
-    def test_page_boundary_continuations(self):
+    def test_given_page_boundary_when_extracted_then_body_is_connected(self):
         pbr = self.terms[TARGETS[1]]
         eps = self.terms[TARGETS[2]]
         self.assertIn("주식을 \n가치주식", pbr.definition)
@@ -71,13 +75,17 @@ class ActualPDFTests(unittest.TestCase):
         self.assertIn("EPS 증가는 \n동 기업", eps.definition)
         self.assertTrue(clean_definition(eps.definition).endswith("신호로 해석될 수 있다."))
 
-    def test_related_terms_including_absent_section(self):
+    def test_given_related_section_when_parsed_then_missing_section_is_valid(
+        self,
+    ):
         self.assertEqual(self.terms[TARGETS[0]].related_terms,
                          ["주당순이익(EPS)", "주가순자산비율(PBR)"])
         self.assertEqual(self.terms[TARGETS[1]].related_terms, ["주가수익비율(PER)"])
         self.assertEqual(self.terms[TARGETS[2]].related_terms, [])
 
-    def test_no_neighboring_body_or_page_decoration(self):
+    def test_given_neighboring_terms_when_extracted_then_no_body_is_mixed(
+        self,
+    ):
         excluded = {
             TARGETS[0]: ["죄수의 딜레마", "치킨게임", "주가순자산가치"],
             TARGETS[1]: ["주가연계증권", "Equity Linked Security"],
@@ -88,7 +96,7 @@ class ActualPDFTests(unittest.TestCase):
                 with self.subTest(term=title, excluded=word):
                     self.assertNotIn(word, self.terms[title].definition)
 
-    def test_mixed_fonts_and_repeated_header(self):
+    def test_given_mixed_fonts_when_extracted_then_headers_are_excluded(self):
         with pymupdf.open(DEFAULT_PDF) as document:
             lines = iter_content_lines(document[309])
             per = next(line for line in lines if "".join(s["text"] for s in line["spans"]) == TARGETS[0])
@@ -99,7 +107,7 @@ class ActualPDFTests(unittest.TestCase):
             self.assertTrue(any("EPS" in "".join(s["text"] for s in line["spans"]) for line in headers))
             self.assertFalse(any(is_term_title(line) for line in headers))
 
-    def test_raw_preserved_when_exporting_cleaned_definition(self):
+    def test_given_cleanup_when_exported_then_raw_text_is_preserved(self):
         for term in self.terms.values():
             original = term.definition
             cleaned = term.to_dict(clean_linebreaks=True)
@@ -112,21 +120,23 @@ class ActualPDFTests(unittest.TestCase):
 
 
 class CleanupTests(unittest.TestCase):
-    def test_book_page_conversion_boundaries_and_unknown_pages(self):
+    def test_given_boundary_pages_when_converted_then_unknown_returns_none(
+        self,
+    ):
         self.assertEqual(pdf_to_book_page(19), 1)
         self.assertEqual(pdf_to_book_page(423), 405)
         for page in [-1, 0, 1, 4, 17, 18, 424, 425, 428, 429]:
             with self.subTest(pdf_page=page):
                 self.assertIsNone(pdf_to_book_page(page))
 
-    def test_wraps_spaces_hyphens_and_paragraphs(self):
+    def test_given_wrapped_text_when_cleaned_then_hyphens_are_kept(self):
         self.assertEqual(clean_definition("원리금상환비\n율"), "원리금상환비율")
         self.assertEqual(clean_definition("흑자를 \n냈다면"), "흑자를 냈다면")
         self.assertEqual(clean_definition("Book-\nvalue"), "Book-value")
         self.assertEqual(clean_definition("첫 문장.\n다음 문장."), "첫 문장. 다음 문장.")
         self.assertEqual(clean_definition("첫 문단\n\n다음 문단"), "첫 문단\n\n다음 문단")
 
-    def test_commas_inside_parentheses(self):
+    def test_given_nested_commas_when_split_then_related_terms_are_kept(self):
         self.assertEqual(split_related_terms("기업분할(물적분할, 인적분할), 주식시장"),
                          ["기업분할(물적분할, 인적분할)", "주식시장"])
 

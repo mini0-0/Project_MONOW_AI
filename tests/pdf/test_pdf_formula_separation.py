@@ -8,12 +8,12 @@ from unittest.mock import patch
 
 import pymupdf
 
-from scripts.glossary import build_glossary, prepare_definition
-from scripts.paths import DEFAULT_PDF
-from scripts.pdf_formulas import definition_glyphs
-from scripts.pdf_formula_separation import (FORMULA_PATTERNS, FormulaSeparationError,
+from pdf.glossary import build_glossary, prepare_definition
+from pdf.paths import DEFAULT_PDF
+from pdf.parser import definition_glyphs
+from pdf.formula_separator import (FORMULA_PATTERNS, FormulaSeparationError,
                                            parse_structure, read_expression, separate_general_formulas)
-from scripts.pdf_terms import Term, extract_terms
+from pdf.extractor import Term, extract_terms
 
 
 # PDF/보존 원문을 직접 대조한 기준값. 운영 코드의 탐지 규칙과 독립적으로 작성한다.
@@ -75,7 +75,7 @@ def walk(node):
 
 
 class GeneralFormulaTests(unittest.TestCase):
-    def test_special_relations_preserve_symbols_and_fraction_structure(self):
+    def test_given_special_symbols_when_parsed_then_relations_are_kept(self):
         for symbol in ("≒", "≠", "≤", "≥"):
             with self.subTest(symbol=symbol):
                 tree = parse_structure(f"π÷(∑x) {symbol} i^*×2")
@@ -85,7 +85,7 @@ class GeneralFormulaTests(unittest.TestCase):
                 self.assertEqual(tree["right"]["operator"], "×")
                 self.assertEqual(tree["right"]["left"]["value"], "i^*")
 
-    def test_position_based_superscript_star_and_subscript(self):
+    def test_given_script_positions_when_read_then_star_meaning_is_kept(self):
         for marker, char, baseline in (("^", "*", 7), ("_", "1", 13)):
             source = f"i{char}×π≒∑x÷2"
             term = Term("synthetic", source, [], 38, 20)
@@ -106,28 +106,34 @@ class GeneralFormulaTests(unittest.TestCase):
         cls.terms = {term.term: term for term in cls.original}
         cls.items, cls.report = separate_general_formulas(DEFAULT_PDF, cls.original)
 
-    def test_36_targets_succeed_with_expected_50_formulas(self):
+    def test_given_36_targets_when_separated_then_50_formulas_match(self):
         self.assertEqual(set(FORMULA_PATTERNS), set(REFERENCES))
         self.assertEqual(self.report["target_term_count"], 36)
         self.assertEqual(self.report["success_term_count"], 36)
         self.assertEqual(self.report["failed_term_count"], 0)
         self.assertEqual(self.report["formula_count"], 50)
 
-    def test_all_expressions_match_original_reference_without_missing_or_duplicate_formulas(self):
+    def test_given_all_expressions_when_compared_then_no_missing_or_duplicate(
+        self,
+    ):
         for title, expected in REFERENCES.items():
             with self.subTest(term=title):
                 actual = [compact(item["expression"]) for item in self.items[title]]
                 self.assertEqual(actual, expected)
                 self.assertEqual(len(actual), len(set(actual)))
 
-    def test_original_789_definitions_unchanged(self):
+    def test_given_789_definitions_when_separated_then_source_is_unchanged(
+        self,
+    ):
         self.assertEqual([term.to_dict() for term in self.original], self.original_dicts)
         for title, items in self.items.items():
             for item in items:
                 start, end = item["source_range"]
                 self.assertEqual(item["source_text"], self.terms[title].definition[start:end])
 
-    def test_pdf_glyph_positions_and_character_accounting(self):
+    def test_given_pdf_glyphs_when_separated_then_pages_and_characters_match(
+        self,
+    ):
         for items in self.items.values():
             for item in items:
                 self.assertTrue(item["source_glyphs"])
@@ -136,14 +142,18 @@ class GeneralFormulaTests(unittest.TestCase):
                 self.assertEqual(item["source_pdf_page"], min(g["pdf_page"] for g in item["source_glyphs"]))
                 self.assertEqual(item["source_book_page"], item["source_pdf_page"] - 18)
 
-    def test_multiple_formulas_remain_separate(self):
+    def test_given_multiple_formulas_when_separated_then_each_is_retained(
+        self,
+    ):
         self.assertEqual(len(self.items["고용률"]), 2)
         self.assertEqual(len(self.items["국외투자율"]), 4)
         self.assertEqual(len(self.items["마샬의 k"]), 3)
         self.assertEqual(len(self.items["조세부담률"]), 2)
         self.assertEqual(len(self.items["통화승수"]), 2)
 
-    def test_employment_and_unemployment_denominators_not_swapped(self):
+    def test_given_two_population_ratios_when_parsed_then_denominators_match(
+        self,
+    ):
         divisions = [[node for node in walk(item["structure"]) if node["type"] == "division"]
                      for item in self.items["고용률"]]
         self.assertEqual(divisions[0][0]["numerator"]["value"], "취업자")
@@ -151,7 +161,9 @@ class GeneralFormulaTests(unittest.TestCase):
         self.assertEqual(divisions[1][0]["numerator"]["value"], "실업자")
         self.assertEqual(divisions[1][0]["denominator"]["value"], "경제활동인구")
 
-    def test_nested_ratio_negative_and_implicit_product_structure(self):
+    def test_given_nested_ratios_when_parsed_then_operator_structure_matches(
+        self,
+    ):
         rca = [node for node in walk(self.items["현시비교우위지수(RCA)"][0]["structure"])
                if node["type"] == "division"]
         self.assertEqual(len(rca), 3)
@@ -161,55 +173,67 @@ class GeneralFormulaTests(unittest.TestCase):
         multiplier = self.items["통화승수"][1]
         self.assertIn("{c+(1-c)r}", multiplier["expression"])
 
-    def test_physical_subscripts_preserved_without_changing_definition(self):
+    def test_given_subscripts_when_read_then_definition_is_unchanged(self):
         items = self.items["성장기여도"]
         self.assertEqual([len(item["subscript_indices"]) for item in items], [3, 3])
         self.assertIn("X_1", items[0]["expression"])
         self.assertIn("ΣX_n", items[0]["expression"])
         self.assertNotIn("X_1", self.terms["성장기여도"].definition)
 
-    def test_actual_formula_pages_can_follow_term_start_page(self):
+    def test_given_later_formula_page_when_read_then_source_page_is_correct(
+        self,
+    ):
         for title, expected in [("국민소득", 57), ("국외저축", 61),
                                 ("노동생산성/노동생산성지수", 104), ("통화승수", 361)]:
             self.assertEqual(self.items[title][0]["source_pdf_page"], expected)
 
-    def test_chained_equation_preserved_and_examples_not_invented(self):
+    def test_given_chained_equations_when_read_then_no_examples_are_invented(
+        self,
+    ):
         self.assertEqual(self.items["국민소득"][0]["expression"].count("="), 5)
         self.assertNotIn("10억원", self.items["레버리지 효과"][0]["expression"])
         self.assertNotIn("9%", " ".join(item["expression"] for item in self.items["EC방식"]))
         self.assertEqual(self.items["국민부담률"][0]["expression"], "조세부담률+사회보장부담률")
 
-    def test_out_of_scope_formula_examples_and_empty_terms_not_added(self):
+    def test_given_outside_scope_when_separated_then_no_formulas_are_added(
+        self,
+    ):
         for title in ("단리/복리", "전월세 전환율", "모기지대출", "주가수익비율(PER)"):
             self.assertNotIn(title, self.items)
 
-    def test_partial_boundary_failure_withholds_entire_term(self):
+    def test_given_partial_boundary_failure_when_read_then_term_is_withheld(
+        self,
+    ):
         with patch.dict(FORMULA_PATTERNS, {"고용률": (FORMULA_PATTERNS["고용률"][0], r"없는(?P<expression>수식)")}):
             items, report = separate_general_formulas(DEFAULT_PDF, [self.terms["고용률"]])
         self.assertEqual(items["고용률"], [])
         self.assertEqual(report["failed_term_count"], 1)
         self.assertEqual(report["terms"][0]["status"], "needs_review")
 
-    def test_duplicate_regions_rejected(self):
+    def test_given_duplicate_regions_when_separated_then_rejected(self):
         first = FORMULA_PATTERNS["고용률"][0]
         with patch.dict(FORMULA_PATTERNS, {"고용률": (first, first)}):
             items, report = separate_general_formulas(DEFAULT_PDF, [self.terms["고용률"]])
         self.assertEqual(items["고용률"], [])
         self.assertIn("중복", report["terms"][0]["reason"])
 
-    def test_unsupported_edition_not_guessed(self):
+    def test_given_unknown_edition_when_read_then_no_formulas_are_guessed(
+        self,
+    ):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "unknown.pdf"
             path.write_bytes(b"not-the-reviewed-pdf")
             with self.assertRaisesRegex(FormulaSeparationError, "SHA-256"):
                 separate_general_formulas(path, self.original)
 
-    def test_incomplete_brackets_and_operands_rejected(self):
+    def test_given_incomplete_syntax_when_parsed_then_rejected(self):
         for expression in ("a/", "a/(b]", "a×", "a=()", "a+(b", "a==b"):
             with self.subTest(expression=expression), self.assertRaises(FormulaSeparationError):
                 parse_structure(expression)
 
-    def test_division_and_times_100_precedence(self):
+    def test_given_times_100_when_parsed_then_division_precedence_is_kept(
+        self,
+    ):
         outside = parse_structure("x=a/b×100")["right"]
         inside = parse_structure("x=a/(b×100)")["right"]
         self.assertEqual(outside["operator"], "×")
@@ -217,7 +241,7 @@ class GeneralFormulaTests(unittest.TestCase):
         self.assertEqual(inside["type"], "division")
         self.assertEqual(inside["denominator"]["value"]["operator"], "×")
 
-    def test_coordinate_order_disagreement_rejected(self):
+    def test_given_wrong_glyph_order_when_read_then_rejected(self):
         term = self.terms["고용률"]
         with pymupdf.open(DEFAULT_PDF) as document:
             glyphs = deepcopy(definition_glyphs(document, term))
@@ -227,7 +251,9 @@ class GeneralFormulaTests(unittest.TestCase):
         with self.assertRaisesRegex(FormulaSeparationError, "가로 글자 순서"):
             read_expression(term, glyphs, start, end)
 
-    def test_final_expression_schema_and_definition_preservation(self):
+    def test_given_final_schema_when_exported_then_definition_is_preserved(
+        self,
+    ):
         glossary, report, _ = build_glossary(targets=("고용률",))
         record = glossary[0]
         self.assertEqual(record["definition"], prepare_definition(self.terms["고용률"].definition))
@@ -237,7 +263,9 @@ class GeneralFormulaTests(unittest.TestCase):
         self.assertNotIn("text", record["formulas"][0])
         self.assertEqual(report["summary"]["general_formula_success_count"], 1)
 
-    def test_uncertain_separation_propagates_needs_review_to_glossary(self):
+    def test_given_uncertain_formula_when_exported_then_review_is_required(
+        self,
+    ):
         with patch.dict(FORMULA_PATTERNS, {"고용률": (r"없는(?P<expression>수식)",)}):
             glossary, report, _ = build_glossary(targets=("고용률",))
         self.assertEqual(glossary[0]["review_status"], "needs_review")
