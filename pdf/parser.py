@@ -9,7 +9,7 @@ import unicodedata
 
 import pymupdf
 
-from scripts.pdf_terms import DEFAULT_PDF, Term, is_term_title, iter_content_lines, pdf_to_book_page
+from pdf.extractor import DEFAULT_PDF, Term, is_term_title, iter_content_lines, pdf_to_book_page
 
 
 PDF_SHA256 = "d48f701f84324f734aa2b4fa255d69df2d46bc311e27a16fe50f48041cc9ac9b"

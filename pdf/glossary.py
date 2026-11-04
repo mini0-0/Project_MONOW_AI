@@ -5,12 +5,12 @@ from pathlib import Path
 import re
 import unicodedata
 
-from scripts.paths import DEFAULT_PDF, REVIEW_DECISIONS
-from scripts.pdf_formulas import REGIONS, enrich_formulas, write_formula_results
-from scripts.pdf_formula_separation import separate_general_formulas
-from scripts.pdf_definition_corrections import correct_definition
-from scripts.pdf_terms import Term, clean_definition, extract_terms
-from scripts.pdf_validation import validate_extraction, write_results
+from pdf.paths import DEFAULT_PDF, REVIEW_DECISIONS
+from pdf.parser import REGIONS, enrich_formulas, write_formula_results
+from pdf.formula_separator import separate_general_formulas
+from pdf.definition_corrections import correct_definition
+from pdf.extractor import Term, clean_definition, extract_terms
+from pdf.validator import validate_extraction, write_results
 
 
 GLOSSARY_FIELDS = {"term", "definition", "formulas", "related_terms",

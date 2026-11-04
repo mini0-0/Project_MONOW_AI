@@ -6,8 +6,8 @@ import unicodedata
 
 import pymupdf
 
-from scripts.pdf_formulas import PDF_SHA256, definition_glyphs
-from scripts.pdf_terms import Term, clean_definition, pdf_to_book_page
+from pdf.parser import PDF_SHA256, definition_glyphs
+from pdf.extractor import Term, clean_definition, pdf_to_book_page
 
 
 # 공백을 제외한 원문에서 찾는 경계. expression 캡처의 글자는 PDF에서 다시 읽는다.
