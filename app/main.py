@@ -15,6 +15,7 @@ async def lifespan(app):
             get_engine().dispose()
             get_engine.cache_clear()
 
+
 app = FastAPI(title="MONOW AI Service", lifespan=lifespan)
 app.include_router(router)
 
@@ -22,5 +23,3 @@ app.include_router(router)
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
-
-

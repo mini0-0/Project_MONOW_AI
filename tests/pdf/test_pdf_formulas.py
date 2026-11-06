@@ -13,40 +13,63 @@ import pymupdf
 
 from pdf.paths import LEGACY_DIR, PROJECT_ROOT
 
-from pdf.parser import (PDF_SHA256, REGIONS, FormulaRestorationError, definition_glyphs,
-                          enrich_formulas, linear_nodes, render_text, restore_region,
-                          write_formula_results)
+from pdf.parser import (
+    PDF_SHA256,
+    REGIONS,
+    FormulaRestorationError,
+    definition_glyphs,
+    enrich_formulas,
+    linear_nodes,
+    render_text,
+    restore_region,
+    write_formula_results,
+)
 from pdf.extractor import DEFAULT_PDF, TARGETS, extract_terms
-
 
 # PDF 원본 화면을 직접 대조하여 작성한 기준. 추출 함수의 출력에서 생성하지 않는다.
 REFERENCE_EQUATIONS = {
     "경제성장률": ["경제성장률(%) = (금년 실질GDP - 전년 실질GDP) / (전년 실질GDP)"],
     "경제활동인구/비경제활동인구/경제활동참가율": [
-        "경제활동참가율 = (경제활동인구(취업자 + 실업자)) / (15세 이상 인구) ×100"],
-    "금리평가이론": ["￦1억 × (1+ i) = ((￦1억) / (S)) × (1+ i^*) × F",
-                  "(F-S) / (S) ≒ i-i^*"],
-    "단위노동비용": ["단위노동비용=(노동비용)/(총산출량)=(시간당 노동비용×총노동시간)/(총산출량)"
-                 "=(시간당 노동비용)/(총산출량/총노동시간)=(시간당 노동비용)/(노동생산성)"],
-    "매출액영업이익률": ["매출액영업이익률=(영업손익)/(매출액)×100="
-                    "((매출총손익*)/(매출액)×(영업손익*)/(매출총손익))×100"],
+        "경제활동참가율 = (경제활동인구(취업자 + 실업자)) / (15세 이상 인구) ×100"
+    ],
+    "금리평가이론": ["￦1억 × (1+ i) = ((￦1억) / (S)) × (1+ i^*) × F", "(F-S) / (S) ≒ i-i^*"],
+    "단위노동비용": [
+        "단위노동비용=(노동비용)/(총산출량)=(시간당 노동비용×총노동시간)/(총산출량)"
+        "=(시간당 노동비용)/(총산출량/총노동시간)=(시간당 노동비용)/(노동생산성)"
+    ],
+    "매출액영업이익률": [
+        "매출액영업이익률=(영업손익)/(매출액)×100="
+        "((매출총손익*)/(매출액)×(영업손익*)/(매출총손익))×100"
+    ],
     "생산확산지수": ["생산확산지수=(증가 업종수+(보합*업종수×0.5))/(전체 업종 수)×100"],
-    "소비자동향지수(CSI)": ["CSI=((매우긍정×1.0+다소긍정×0.5-다소부정×0.5-매우부정×1.0))"
-                      "/(전체 응답 가구 수)×100+100"],
+    "소비자동향지수(CSI)": [
+        "CSI=((매우긍정×1.0+다소긍정×0.5-다소부정×0.5-매우부정×1.0))" "/(전체 응답 가구 수)×100+100"
+    ],
     "테일러 준칙(Taylor’s Rule)": ["i_t=r_t^*+π_t+0.5(π_t-π_t^*)+0.5y_t"],
 }
 
 
 REFERENCE_FRACTIONS = {
     "경제성장률": [("금년 실질GDP - 전년 실질GDP", "전년 실질GDP")],
-    "경제활동인구/비경제활동인구/경제활동참가율": [("경제활동인구(취업자 + 실업자)", "15세 이상 인구")],
+    "경제활동인구/비경제활동인구/경제활동참가율": [
+        ("경제활동인구(취업자 + 실업자)", "15세 이상 인구")
+    ],
     "금리평가이론": [("￦1억", "S"), ("F-S", "S")],
-    "단위노동비용": [("노동비용", "총산출량"), ("시간당 노동비용×총노동시간", "총산출량"),
-                 ("시간당 노동비용", "총산출량/총노동시간"), ("시간당 노동비용", "노동생산성")],
-    "매출액영업이익률": [("영업손익", "매출액"), ("매출총손익*", "매출액"), ("영업손익*", "매출총손익")],
+    "단위노동비용": [
+        ("노동비용", "총산출량"),
+        ("시간당 노동비용×총노동시간", "총산출량"),
+        ("시간당 노동비용", "총산출량/총노동시간"),
+        ("시간당 노동비용", "노동생산성"),
+    ],
+    "매출액영업이익률": [
+        ("영업손익", "매출액"),
+        ("매출총손익*", "매출액"),
+        ("영업손익*", "매출총손익"),
+    ],
     "생산확산지수": [("증가 업종수 + (보합*업종수×0.5)", "전체 업종 수")],
-    "소비자동향지수(CSI)": [("(매우긍정 × 1.0 + 다소긍정 × 0.5 - 다소부정 × 0.5 - 매우부정 × 1.0)",
-                        "전체 응답 가구 수")],
+    "소비자동향지수(CSI)": [
+        ("(매우긍정 × 1.0 + 다소긍정 × 0.5 - 다소부정 × 0.5 - 매우부정 × 1.0)", "전체 응답 가구 수")
+    ],
     "테일러 준칙(Taylor’s Rule)": [],
 }
 
@@ -72,52 +95,67 @@ class FormulaTests(unittest.TestCase):
         cls.records, cls.report = enrich_formulas(DEFAULT_PDF, cls.original)
         cls.by_title = {record["term"]: record for record in cls.records}
 
-    def test_given_eight_terms_when_restored_then_nine_equations_match(self):
+    def test_restore_nine_equations_for_eight_terms(self):
         self.assertEqual(self.report["restored_term_count"], 8)
         self.assertEqual(self.report["equation_count"], 9)
         self.assertEqual(self.report["fraction_count"], 13)
         self.assertEqual({r["term"] for r in self.records if r["formulas"]}, set(REGIONS))
 
-    def test_given_reference_equations_when_restored_then_symbols_match(self):
+    def test_match_restored_equations_to_reference_symbols(self):
         for title, expected in REFERENCE_EQUATIONS.items():
             with self.subTest(term=title):
-                self.assertEqual([compact(item["text"]) for item in self.by_title[title]["formulas"]],
-                                 [compact(text) for text in expected])
+                self.assertEqual(
+                    [compact(item["text"]) for item in self.by_title[title]["formulas"]],
+                    [compact(text) for text in expected],
+                )
 
-    def test_given_source_fractions_when_restored_then_both_parts_match(self):
+    def test_match_fraction_numerators_and_denominators(self):
         for title, expected in REFERENCE_FRACTIONS.items():
             with self.subTest(term=title):
-                fractions = [node for item in self.by_title[title]["formulas"]
-                             for node in walk(item["ast"]) if node["type"] == "fraction"]
-                actual = [(compact(render_text(node["numerator"])), compact(render_text(node["denominator"])))
-                          for node in fractions]
+                fractions = [
+                    node
+                    for item in self.by_title[title]["formulas"]
+                    for node in walk(item["ast"])
+                    if node["type"] == "fraction"
+                ]
+                actual = [
+                    (
+                        compact(render_text(node["numerator"])),
+                        compact(render_text(node["denominator"])),
+                    )
+                    for node in fractions
+                ]
                 self.assertEqual(actual, [(compact(n), compact(d)) for n, d in expected])
 
-    def test_given_taylor_formula_when_restored_then_scripts_and_pi_match(
-        self,
-    ):
+    def test_restore_taylor_scripts_and_pi(self):
         record = self.by_title["테일러 준칙(Taylor’s Rule)"]
         self.assertEqual(record["definition"].count("\uf0bc"), 5)
         self.assertNotIn("\uf0bc", record["definition_with_formulas"])
         self.assertEqual(record["definition_with_formulas"].count("π"), 5)
         self.assertIn("π_t^*: 물가목표, y_t: GDP갭률)", record["definition_with_formulas"])
-        variables = [node for node in walk(record["formulas"][0]["ast"]) if node["type"] == "variable"]
-        self.assertEqual([(n["name"], n.get("subscript"), n.get("superscript")) for n in variables],
-                         [("i", "t", None), ("r", "t", "*"), ("π", "t", None),
-                          ("π", "t", None), ("π", "t", "*"), ("y", "t", None)])
+        variables = [
+            node for node in walk(record["formulas"][0]["ast"]) if node["type"] == "variable"
+        ]
+        self.assertEqual(
+            [(n["name"], n.get("subscript"), n.get("superscript")) for n in variables],
+            [
+                ("i", "t", None),
+                ("r", "t", "*"),
+                ("π", "t", None),
+                ("π", "t", None),
+                ("π", "t", "*"),
+                ("y", "t", None),
+            ],
+        )
 
-    def test_given_789_raw_records_when_restored_then_inputs_are_unchanged(
-        self,
-    ):
+    def test_preserve_all_789_raw_records_during_restoration(self):
         baseline = json.loads(LEGACY_DIR.joinpath("all_terms_raw.json").read_text())
         self.assertEqual([term.to_dict() for term in self.original], baseline)
         for record, term in zip(self.records, self.original):
             for key, value in term.to_dict().items():
                 self.assertEqual(record[key], value)
 
-    def test_given_outside_targets_when_restored_then_records_are_unchanged(
-        self,
-    ):
+    def test_leave_records_outside_restoration_targets_unchanged(self):
         unchanged = [record for record in self.records if not record["formulas"]]
         self.assertEqual(len(unchanged), 781)
         for record in unchanged:
@@ -127,24 +165,24 @@ class FormulaTests(unittest.TestCase):
         self.assertEqual(report["restored_term_count"], 0)
         self.assertEqual([r["term"] for r in enriched], list(TARGETS))
 
-    def test_given_formula_regions_when_restored_then_outside_text_is_kept(
-        self,
-    ):
+    def test_preserve_text_outside_formula_regions(self):
         for title in REGIONS:
             record = self.by_title[title]
             parts = record["formulas"] + record["formula_annotations"]
             used = {index for part in parts for index in part["source_indices"]}
-            expected = "".join(c for index, c in enumerate(record["definition"]) if index not in used)
+            expected = "".join(
+                c for index, c in enumerate(record["definition"]) if index not in used
+            )
             remainder = record["definition_with_formulas"]
+
             for part in parts:
                 self.assertEqual(remainder.count(part["text"]), 1)
                 remainder = remainder.replace(part["text"], "", 1)
             self.assertEqual(compact(remainder), compact(expected), title)
 
-    def test_given_fraction_scripts_when_rendered_then_mathml_structure_matches(
-        self,
-    ):
+    def test_render_fraction_and_script_mathml_structure(self):
         total_fractions = 0
+
         for record in self.records:
             for item in record["formulas"] + record["formula_annotations"]:
                 root = ET.fromstring("<math>" + item["mathml"] + "</math>")
@@ -153,81 +191,110 @@ class FormulaTests(unittest.TestCase):
         taylor = self.by_title["테일러 준칙(Taylor’s Rule)"]["formulas"][0]["mathml"]
         self.assertEqual(len(ET.fromstring(taylor).findall(".//msubsup")), 2)
 
-    def test_given_source_formulas_when_restored_then_no_times_100_invented(
-        self,
-    ):
+    def test_preserve_annotations_without_inventing_times_100(self):
         self.assertNotIn("100", self.by_title["경제성장률"]["formulas"][0]["text"])
         record = self.by_title["매출액영업이익률"]
         self.assertIn("* 매출총소익 = 매출액 - 매출원가", record["definition_with_formulas"])
         self.assertIn("** 영업손익", record["definition_with_formulas"])
-        self.assertIn("* 보합: -0.05% < 증감률 < 0.05%",
-                      self.by_title["생산확산지수"]["definition_with_formulas"])
+        self.assertIn(
+            "* 보합: -0.05% < 증감률 < 0.05%",
+            self.by_title["생산확산지수"]["definition_with_formulas"],
+        )
 
-    def test_given_unknown_edition_when_restored_then_content_is_not_guessed(
-        self,
-    ):
+    def test_reject_unverified_pdf_edition_for_restoration(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "other.pdf"
             path.write_bytes(DEFAULT_PDF.read_bytes() + b"\n% modified\n")
+
             with self.assertRaisesRegex(FormulaRestorationError, "SHA-256"):
                 enrich_formulas(path, self.original)
 
-    def test_given_changed_definition_when_restored_then_rejected(self):
+    def test_reject_changed_definition_for_restoration(self):
         term = next(term for term in self.original if term.term == "경제성장률")
         with self.assertRaisesRegex(FormulaRestorationError, "원본 정의"):
             enrich_formulas(DEFAULT_PDF, [replace(term, definition=term.definition + "변경")])
 
-    def test_given_missing_denominator_when_restored_then_rejected(self):
+    def test_reject_fraction_without_denominator(self):
+        # Given
         term = next(term for term in self.original if term.term == "경제성장률")
         region = REGIONS[term.term][0]
         with pymupdf.open(DEFAULT_PDF) as document:
             glyphs = definition_glyphs(document, term)
-            without_denominator = [g for g in glyphs if not (
-                g["pdf_page"] == 33 and g["bbox"][1] > 655 and g["bbox"][3] < 670)]
+
+            # When
+            without_denominator = [
+                g
+                for g in glyphs
+                if not (g["pdf_page"] == 33 and g["bbox"][1] > 655 and g["bbox"][3] < 670)
+            ]
+
+            # Then
             with self.assertRaisesRegex(FormulaRestorationError, "분자 또는 분모"):
                 restore_region(document[32], region, without_denominator)
 
-    def test_given_missing_fraction_line_when_restored_then_rejected(self):
+    def test_reject_fraction_without_bar(self):
         term = next(term for term in self.original if term.term == "경제성장률")
         with pymupdf.open(DEFAULT_PDF) as document:
             glyphs = definition_glyphs(document, term)
+
             class NoBars:
                 def get_drawings(self):
                     return []
+
             with self.assertRaisesRegex(FormulaRestorationError, "분수선"):
                 restore_region(NoBars(), REGIONS[term.term][0], glyphs)
 
-    def test_given_private_glyph_when_restored_then_verified_font_is_required(
-        self,
-    ):
-        glyph = {"c": "\uf0bc", "font": "OtherFont", "size": 10.5,
-                 "bbox": (0, 0, 5, 10), "origin": (0, 8), "index": 0}
+    def test_require_verified_font_for_private_glyph(self):
+        glyph = {
+            "c": "\uf0bc",
+            "font": "OtherFont",
+            "size": 10.5,
+            "bbox": (0, 0, 5, 10),
+            "origin": (0, 8),
+            "index": 0,
+        }
+
         with self.assertRaisesRegex(FormulaRestorationError, "전용영역"):
             linear_nodes([glyph], map_pi=True)
 
-    def test_given_existing_raw_file_when_exported_then_file_is_preserved(
-        self,
-    ):
+    def test_preserve_existing_raw_file_during_formula_export(self):
+        # Given
         with tempfile.TemporaryDirectory() as directory:
             sentinel = Path(directory) / "all_terms_raw.json"
             sentinel.write_text("원본 유지")
+
+            # When
             write_formula_results(directory, self.records, self.report)
+
+            # Then
             self.assertEqual(sentinel.read_text(), "원본 유지")
             saved = json.loads((Path(directory) / "all_terms_with_formulas.json").read_text())
             self.assertEqual(saved, self.records)
             html = (Path(directory) / "all_terms_formula_comparison.html").read_text()
             self.assertIn("<mfrac>", html)
-            self.assertEqual(len(list((Path(directory) / "all_terms_formula_evidence").glob("*.png"))), 11)
+            self.assertEqual(
+                len(list((Path(directory) / "all_terms_formula_evidence").glob("*.png"))), 11
+            )
 
-    def test_given_restore_cli_when_run_then_789_raw_records_are_preserved(
-        self,
-    ):
+    def test_preserve_raw_records_and_pdf_during_restore_cli(self):
+        # Given
         with tempfile.TemporaryDirectory() as directory:
+            # When
             result = subprocess.run(
-                [sys.executable, str(PROJECT_ROOT / "pdf" / "extractor.py"),
-                 "--restore-formulas", "--output-dir", directory],
-                text=True, capture_output=True, check=True)
+                [
+                    sys.executable,
+                    str(PROJECT_ROOT / "pdf" / "extractor.py"),
+                    "--restore-formulas",
+                    "--output-dir",
+                    directory,
+                ],
+                text=True,
+                capture_output=True,
+                check=True,
+            )
             summary = json.loads(result.stdout)
+
+            # Then
             self.assertEqual(summary["record_count"], 789)
             self.assertEqual(summary["restored_term_count"], 8)
             self.assertFalse((Path(directory) / "all_terms_raw.json").exists())

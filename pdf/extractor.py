@@ -12,6 +12,7 @@ import pymupdf
 
 
 from pdf.paths import DEFAULT_PDF, DEBUG_DIR, OUTPUT_DIR
+
 TARGETS = ("주가수익비율(PER)", "주가순자산비율(PBR)", "주당순이익(EPS)")
 TITLE_FONTS = {"SUIT-ExtraBold", "DIN-Bold"}
 
@@ -56,10 +57,9 @@ def clean_definition(text: str) -> str:
             continue
         # 이 PDF는 어절 중간에서 줄이 바뀌면 줄 끝 공백이 없다.
         # 영문 Book- / value의 하이픈도 그대로 유지한다.
-        joined_word = (
-            not previous[-1].isspace()
-            and (previous.endswith("-") or bool(re.search(r"[가-힣]$", previous)
-                                                 and re.match(r"[가-힣]", current)))
+        joined_word = not previous[-1].isspace() and (
+            previous.endswith("-")
+            or bool(re.search(r"[가-힣]$", previous) and re.match(r"[가-힣]", current))
         )
         result += ("" if joined_word else " ") + current.strip()
     return result.strip()
@@ -70,7 +70,8 @@ def iter_content_lines(page):
         line
         for block in page.get_text("dict")["blocks"]
         for line in block.get("lines", [])
-        if 70 <= line["bbox"][1] and line["bbox"][3] <= page.rect.height - 55
+        if 70 <= line["bbox"][1]
+        and line["bbox"][3] <= page.rect.height - 55
         and 70 <= line["bbox"][0] < page.rect.width - 55
     ]
     return sorted(lines, key=lambda line: (line["bbox"][1], line["bbox"][0]))
@@ -79,9 +80,10 @@ def iter_content_lines(page):
 def is_term_title(line) -> bool:
     """이 판본의 제목을 글꼴, 14pt, 왼쪽 위치로 판별. 영문 제목도 포함한다."""
     spans = [span for span in line["spans"] if span["text"].strip()]
-    return bool(spans) and abs(line["bbox"][0] - 85.04) < 3 and all(
-        span["font"] in TITLE_FONTS and abs(span["size"] - 14) < 0.2
-        for span in spans
+    return (
+        bool(spans)
+        and abs(line["bbox"][0] - 85.04) < 3
+        and all(span["font"] in TITLE_FONTS and abs(span["size"] - 14) < 0.2 for span in spans)
     )
 
 
@@ -100,8 +102,9 @@ def split_related_terms(text: str) -> list[str]:
     return [term for term in terms if term]
 
 
-def extract_terms(pdf_path: str | Path = DEFAULT_PDF,
-                  targets: tuple[str, ...] | None = None) -> list[Term]:
+def extract_terms(
+    pdf_path: str | Path = DEFAULT_PDF, targets: tuple[str, ...] | None = None
+) -> list[Term]:
     """전체 본문을 수집한다. targets를 지정하면 모든 제목을 경계로 쓰면서 대상만 반환."""
     found = []
     active = None
@@ -111,19 +114,24 @@ def extract_terms(pdf_path: str | Path = DEFAULT_PDF,
     def finish():
         if active is None:
             return
+
         title, page_number = active
         definition = "\n".join(body).strip("\n")
+
         if targets is not None and any(term.term == title for term in found):
             raise ValueError(f"중복 제목 발견: {title}")
         if targets is not None and not definition.strip():
             raise ValueError(f"설명이 비어 있음: {title}")
-        found.append(Term(
-            term=title,
-            definition=definition,
-            related_terms=split_related_terms(" ".join(related)),
-            source_pdf_page=page_number,
-            source_book_page=pdf_to_book_page(page_number),
-        ))
+
+        found.append(
+            Term(
+                term=title,
+                definition=definition,
+                related_terms=split_related_terms(" ".join(related)),
+                source_pdf_page=page_number,
+                source_book_page=pdf_to_book_page(page_number),
+            )
+        )
 
     with pymupdf.open(pdf_path) as document:
         for page_number, page in enumerate(document, start=1):
@@ -146,12 +154,14 @@ def extract_terms(pdf_path: str | Path = DEFAULT_PDF,
                     else:
                         body.append(text)
         finish()
+
     if targets is not None:
         by_title = {term.term: term for term in found}
         missing = set(targets) - by_title.keys()
         if missing:
             raise ValueError(f"대상 제목을 찾지 못함: {', '.join(sorted(missing))}")
         return [by_title[title] for title in targets]
+
     return found
 
 
@@ -164,18 +174,30 @@ def main():
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     parser.add_argument("--debug", action="store_true", help="상세 JSON·수식 비교 이미지·HTML 저장")
     parser.add_argument("--debug-dir", type=Path, default=DEBUG_DIR)
-    parser.add_argument("--restore-formulas", action="store_true", help="호환 옵션. 검증된 수식 복원은 기본 적용")
-    parser.add_argument("--clean-linebreaks", action="store_true", help="호환 옵션. 최종 definition 정제는 기본 적용")
+    parser.add_argument(
+        "--restore-formulas", action="store_true", help="호환 옵션. 검증된 수식 복원은 기본 적용"
+    )
+    parser.add_argument(
+        "--clean-linebreaks",
+        action="store_true",
+        help="호환 옵션. 최종 definition 정제는 기본 적용",
+    )
     args = parser.parse_args()
     targets = TARGETS if args.scope == "three" else None
     if args.terms:
         aliases = dict(zip(("PER", "PBR", "EPS"), TARGETS))
         targets = tuple(dict.fromkeys(aliases.get(term.upper(), term) for term in args.terms))
     from pdf.glossary import build_glossary, write_outputs
+
     glossary, report, debug_data = build_glossary(args.pdf, targets=targets)
-    write_outputs(args.output_dir, glossary, report,
-                  debug_data=debug_data if args.debug else None,
-                  debug_dir=args.debug_dir if args.debug else None, pdf_path=args.pdf)
+    write_outputs(
+        args.output_dir,
+        glossary,
+        report,
+        debug_data=debug_data if args.debug else None,
+        debug_dir=args.debug_dir if args.debug else None,
+        pdf_path=args.pdf,
+    )
     if targets is not None:
         print(json.dumps(glossary, ensure_ascii=False, indent=2))
     else:
