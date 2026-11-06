@@ -11,7 +11,6 @@ import pymupdf
 
 from pdf.extractor import DEFAULT_PDF, Term, is_term_title, iter_content_lines, pdf_to_book_page
 
-
 PDF_SHA256 = "d48f701f84324f734aa2b4fa255d69df2d46bc311e27a16fe50f48041cc9ac9b"
 
 
@@ -31,8 +30,7 @@ class Region:
 REGIONS = {
     "경제성장률": (Region(33, (174, 635, 374, 670), 1),),
     "경제활동인구/비경제활동인구/경제활동참가율": (Region(36, (160, 257, 387, 293), 1),),
-    "금리평가이론": (Region(77, (190, 313, 357, 342), 1),
-                  Region(77, (241.5, 385, 287, 409), 1)),
+    "금리평가이론": (Region(77, (190, 313, 357, 342), 1), Region(77, (241.5, 385, 287, 409), 1)),
     "단위노동비용": (Region(108, (155, 88, 393, 165), 4),),
     "매출액영업이익률": (Region(135, (123, 556, 424, 591), 3),),
     "생산확산지수": (Region(184, (159, 425, 389, 462), 1),),
@@ -57,8 +55,11 @@ def definition_glyphs(document, term: Term) -> list[dict]:
     for page_number in range(term.source_pdf_page, min(len(document), 423) + 1):
         page = document[page_number - 1]
         raw_lines = {
-            tuple(line["bbox"]): [dict(char, font=span["font"], size=span["size"])
-                                 for span in line["spans"] for char in span["chars"]]
+            tuple(line["bbox"]): [
+                dict(char, font=span["font"], size=span["size"])
+                for span in line["spans"]
+                for char in span["chars"]
+            ]
             for block in page.get_text("rawdict")["blocks"]
             for line in block.get("lines", [])
         }
@@ -148,14 +149,18 @@ def fraction_bars(page, region: Region) -> list[tuple]:
     bars = sorted(set(bars), key=lambda bar: (round(bar[1], 1), bar[0]))
     if len(bars) != region.fraction_count:
         raise FormulaRestorationError(
-            f"PDF {region.pdf_page}: 분수선 {len(bars)}개, 예상 {region.fraction_count}개")
+            f"PDF {region.pdf_page}: 분수선 {len(bars)}개, 예상 {region.fraction_count}개"
+        )
     return bars
 
 
 def restore_region(page, region: Region, glyphs: list[dict], *, map_pi=False) -> dict:
     """분수선 위/아래의 글자를 명시적인 numerator/denominator 노드로 만든다."""
-    selected = [g for g in glyphs if g["pdf_page"] == region.pdf_page
-                and _inside(g, pymupdf.Rect(region.bbox))]
+    selected = [
+        g
+        for g in glyphs
+        if g["pdf_page"] == region.pdf_page and _inside(g, pymupdf.Rect(region.bbox))
+    ]
     if not selected:
         raise FormulaRestorationError("빈 수식 영역")
     bars = fraction_bars(page, region)
@@ -170,14 +175,23 @@ def restore_region(page, region: Region, glyphs: list[dict], *, map_pi=False) ->
                     raise FormulaRestorationError("분수 영역 중복")
                 (numerator if delta < 0 else denominator).append(glyph)
                 consumed.add(glyph["index"])
-        if not any(g["c"].strip() for g in numerator) or not any(g["c"].strip() for g in denominator):
+        if not any(g["c"].strip() for g in numerator) or not any(
+            g["c"].strip() for g in denominator
+        ):
             raise FormulaRestorationError("분자 또는 분모 누락")
-        fractions.append((x0, y, {
-            "type": "fraction", "numerator": linear_nodes(numerator, map_pi=map_pi),
-            "denominator": linear_nodes(denominator, map_pi=map_pi),
-            "source_bar": [x0, y, x1, y],
-            "source_indices": [g["index"] for g in numerator + denominator],
-        }))
+        fractions.append(
+            (
+                x0,
+                y,
+                {
+                    "type": "fraction",
+                    "numerator": linear_nodes(numerator, map_pi=map_pi),
+                    "denominator": linear_nodes(denominator, map_pi=map_pi),
+                    "source_bar": [x0, y, x1, y],
+                    "source_indices": [g["index"] for g in numerator + denominator],
+                },
+            )
+        )
     remaining = [g for g in selected if g["index"] not in consumed]
     if not bars:
         ast = linear_nodes(remaining, map_pi=map_pi)
@@ -188,8 +202,11 @@ def restore_region(page, region: Region, glyphs: list[dict], *, map_pi=False) ->
                 rows.append(y)
         children = []
         for y in rows:
-            row_glyphs = [g for g in remaining
-                          if min(rows, key=lambda yy: abs(g["origin"][1] - (yy + 3))) == y]
+            row_glyphs = [
+                g
+                for g in remaining
+                if min(rows, key=lambda yy: abs(g["origin"][1] - (yy + 3))) == y
+            ]
             row_fractions = [(x, node) for x, yy, node in fractions if abs(yy - y) <= 3]
             # 분수선의 x 위치에 분수 노드를 삽입하고 중간의 등호·곱셈 등은 그대로 읽는다.
             start = float("-inf")
@@ -198,16 +215,25 @@ def restore_region(page, region: Region, glyphs: list[dict], *, map_pi=False) ->
                 children.extend(linear_nodes(chunk, map_pi=map_pi)["children"])
                 children.append(node)
                 start = x
-            children.extend(linear_nodes([g for g in row_glyphs if g["bbox"][0] >= start],
-                                         map_pi=map_pi)["children"])
+            children.extend(
+                linear_nodes([g for g in row_glyphs if g["bbox"][0] >= start], map_pi=map_pi)[
+                    "children"
+                ]
+            )
         ast = {"type": "sequence", "children": children}
     source = "".join(g["c"] for g in sorted(selected, key=lambda g: g["index"]))
-    return {"role": region.role, "source_pdf_page": region.pdf_page,
-            "source_book_page": pdf_to_book_page(region.pdf_page), "source_bbox": list(region.bbox),
-            "source_text": source, "source_indices": sorted(g["index"] for g in selected),
-            "ast": ast, "text": re.sub(r"[ \t]+", " ", render_text(ast)).strip(),
-            "mathml": render_mathml(ast),
-            "fraction_count": len(bars)}
+    return {
+        "role": region.role,
+        "source_pdf_page": region.pdf_page,
+        "source_book_page": pdf_to_book_page(region.pdf_page),
+        "source_bbox": list(region.bbox),
+        "source_text": source,
+        "source_indices": sorted(g["index"] for g in selected),
+        "ast": ast,
+        "text": re.sub(r"[ \t]+", " ", render_text(ast)).strip(),
+        "mathml": render_mathml(ast),
+        "fraction_count": len(bars),
+    }
 
 
 def render_text(node: dict) -> str:
@@ -215,10 +241,16 @@ def render_text(node: dict) -> str:
     if kind == "text":
         return node["text"]
     if kind == "variable":
-        return (node["name"] + ("_" + node["subscript"] if "subscript" in node else "")
-                + ("^" + node["superscript"] if "superscript" in node else ""))
+        return (
+            node["name"]
+            + ("_" + node["subscript"] if "subscript" in node else "")
+            + ("^" + node["superscript"] if "superscript" in node else "")
+        )
     if kind == "fraction":
-        return f"({render_text(node['numerator']).strip()}) / ({render_text(node['denominator']).strip()})"
+        return (
+            f"({render_text(node['numerator']).strip()}) / "
+            f"({render_text(node['denominator']).strip()})"
+        )
     if kind == "sequence":
         return "".join(render_text(child) for child in node["children"])
     raise FormulaRestorationError(f"알 수 없는 수식 노드: {kind}")
@@ -229,7 +261,9 @@ def render_mathml(node: dict) -> str:
     if kind == "text":
         return f"<mtext>{escape(node['text'])}</mtext>"
     if kind == "fraction":
-        return f"<mfrac>{render_mathml(node['numerator'])}{render_mathml(node['denominator'])}</mfrac>"
+        return (
+            f"<mfrac>{render_mathml(node['numerator'])}{render_mathml(node['denominator'])}</mfrac>"
+        )
     if kind == "sequence":
         return "<mrow>" + "".join(render_mathml(child) for child in node["children"]) + "</mrow>"
     if kind == "variable":
@@ -252,7 +286,9 @@ def _ast_source_characters(node):
     if node["type"] == "variable":
         return node["name"] + node.get("subscript", "") + node.get("superscript", "")
     if node["type"] == "fraction":
-        return _ast_source_characters(node["numerator"]) + _ast_source_characters(node["denominator"])
+        return _ast_source_characters(node["numerator"]) + _ast_source_characters(
+            node["denominator"]
+        )
     return "".join(_ast_source_characters(child) for child in node["children"])
 
 
@@ -265,7 +301,9 @@ def enrich_formulas(pdf_path: str | Path, terms: list[Term]) -> tuple[list[dict]
     with pymupdf.open(pdf_path) as document:
         for term in terms:
             record = term.to_dict()
-            record.update(definition_with_formulas=term.definition, formulas=[], formula_annotations=[])
+            record.update(
+                definition_with_formulas=term.definition, formulas=[], formula_annotations=[]
+            )
             if term.term not in REGIONS:
                 records.append(record)
                 continue
@@ -273,8 +311,12 @@ def enrich_formulas(pdf_path: str | Path, terms: list[Term]) -> tuple[list[dict]
             replacements = []
             used = set()
             for region in REGIONS[term.term]:
-                item = restore_region(document[region.pdf_page - 1], region, glyphs,
-                                      map_pi=term.term == "테일러 준칙(Taylor’s Rule)")
+                item = restore_region(
+                    document[region.pdf_page - 1],
+                    region,
+                    glyphs,
+                    map_pi=term.term == "테일러 준칙(Taylor’s Rule)",
+                )
                 indices = set(item["source_indices"])
                 if used & indices:
                     raise FormulaRestorationError("수식 교체 영역 중복")
@@ -286,8 +328,12 @@ def enrich_formulas(pdf_path: str | Path, terms: list[Term]) -> tuple[list[dict]
                 if any(unicodedata.category(c) == "Co" for c in item["text"]):
                     raise FormulaRestorationError("복원 결과에 전용영역 문자 잔존")
                 replacements.append(item)
-                record["formulas" if region.role == "equation" else "formula_annotations"].append(item)
-            insertions = {min(item["source_indices"]): item["text"].strip() for item in replacements}
+                record["formulas" if region.role == "equation" else "formula_annotations"].append(
+                    item
+                )
+            insertions = {
+                min(item["source_indices"]): item["text"].strip() for item in replacements
+            }
             pieces = []
             untouched = []
             for index, char in enumerate(term.definition):
@@ -298,38 +344,55 @@ def enrich_formulas(pdf_path: str | Path, terms: list[Term]) -> tuple[list[dict]
                     untouched.append(char)
             record["definition_with_formulas"] = re.sub(r"\n[ \t]*\n+", "\n", "".join(pieces))
             record["formula_restoration"] = {
-                "method": "reviewed_regions_pdf_geometry", "pdf_sha256": digest,
+                "method": "reviewed_regions_pdf_geometry",
+                "pdf_sha256": digest,
                 "original_definition_sha256": hashlib.sha256(term.definition.encode()).hexdigest(),
-                "outside_region_characters_sha256": hashlib.sha256("".join(untouched).encode()).hexdigest(),
+                "outside_region_characters_sha256": hashlib.sha256(
+                    "".join(untouched).encode()
+                ).hexdigest(),
                 "source_glyphs_accounted_for": True,
                 "pi_mapping": "TeXplusMI U+F0BC -> π" if "\uf0bc" in term.definition else None,
             }
-            checks.append({"term": term.term, "source_pdf_page": term.source_pdf_page,
-                           "source_book_page": term.source_book_page,
-                           "equation_count": len(record["formulas"]),
-                           "fraction_count": sum(item["fraction_count"] for item in replacements),
-                           "source_glyphs_accounted_for": True,
-                           "original_definition_preserved": record["definition"] == term.definition})
+            checks.append(
+                {
+                    "term": term.term,
+                    "source_pdf_page": term.source_pdf_page,
+                    "source_book_page": term.source_book_page,
+                    "equation_count": len(record["formulas"]),
+                    "fraction_count": sum(item["fraction_count"] for item in replacements),
+                    "source_glyphs_accounted_for": True,
+                    "original_definition_preserved": record["definition"] == term.definition,
+                }
+            )
             records.append(record)
-    return records, {"method": "reviewed_regions_pdf_geometry", "pdf_sha256": digest,
-                     "restored_term_count": len(checks), "terms": checks,
-                     "equation_count": sum(item["equation_count"] for item in checks),
-                     "fraction_count": sum(item["fraction_count"] for item in checks),
-                     "original_fields_preserved": all(
-                         all(record[key] == value for key, value in term.to_dict().items())
-                         for record, term in zip(records, terms)),
-                     "scope": "품질 보고서의 8개 용어만 복원. 다른 수식·표는 변경하지 않음"}
+    return records, {
+        "method": "reviewed_regions_pdf_geometry",
+        "pdf_sha256": digest,
+        "restored_term_count": len(checks),
+        "terms": checks,
+        "equation_count": sum(item["equation_count"] for item in checks),
+        "fraction_count": sum(item["fraction_count"] for item in checks),
+        "original_fields_preserved": all(
+            all(record[key] == value for key, value in term.to_dict().items())
+            for record, term in zip(records, terms)
+        ),
+        "scope": "품질 보고서의 8개 용어만 복원. 다른 수식·표는 변경하지 않음",
+    }
 
 
-def write_formula_results(output_dir, records: list[dict], report: dict, *, scope="all",
-                          pdf_path=DEFAULT_PDF) -> None:
+def write_formula_results(
+    output_dir, records: list[dict], report: dict, *, scope="all", pdf_path=DEFAULT_PDF
+) -> None:
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     prefix = "all_terms" if scope == "all" else "terms"
-    for filename, value in [(f"{prefix}_with_formulas.json", records),
-                            (f"{prefix}_formula_validation.json", report)]:
-        (output_dir / filename).write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n",
-                                          encoding="utf-8")
+    for filename, value in [
+        (f"{prefix}_with_formulas.json", records),
+        (f"{prefix}_formula_validation.json", report),
+    ]:
+        (output_dir / filename).write_text(
+            json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
     evidence_dir = output_dir / f"{prefix}_formula_evidence"
     evidence_dir.mkdir(exist_ok=True)
     cards = []
@@ -341,23 +404,30 @@ def write_formula_results(output_dir, records: list[dict], report: dict, *, scop
             for number, item in enumerate(record["formulas"] + record["formula_annotations"]):
                 name = f"term_{index:03d}_{number}.png"
                 page = document[item["source_pdf_page"] - 1]
-                page.get_pixmap(matrix=pymupdf.Matrix(3, 3), clip=pymupdf.Rect(item["source_bbox"]),
-                                alpha=False).save(evidence_dir / name)
+                page.get_pixmap(
+                    matrix=pymupdf.Matrix(3, 3), clip=pymupdf.Rect(item["source_bbox"]), alpha=False
+                ).save(evidence_dir / name)
                 cards.append(
-                    f"<p>PDF {item['source_pdf_page']}쪽 / 책 {item['source_book_page']}쪽 · {item['role']}</p>"
+                    f"<p>PDF {item['source_pdf_page']}쪽 / 책 {item['source_book_page']}쪽 "
+                    f"· {item['role']}</p>"
                     f"<div class='pair'><figure><figcaption>원본 PDF 영역</figcaption>"
                     f"<img src='{escape(evidence_dir.name)}/{name}' alt='원본 수식'></figure>"
                     f"<figure><figcaption>복원한 구조</figcaption>"
-                    f"<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>{item['mathml']}</math>"
-                    f"<pre>{escape(item['text'])}</pre></figure></div>")
-    html = ("<!doctype html><html lang='ko'><meta charset='utf-8'><title>수식 복원 비교</title>"
-            "<style>body{font-family:sans-serif;margin:32px;line-height:1.6}"
-            ".pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}"
-            "figure{margin:0;padding:16px;border:1px solid #ccc;overflow:auto}"
-            "img{max-width:100%;height:auto}pre{white-space:pre-wrap}math{font-size:1.2rem}"
-            "@media(max-width:900px){.pair{grid-template-columns:1fr}}</style>"
-            "<h1>수식 원본·복원 결과 비교</h1>"
-            "<p>검토한 8개 용어에만 적용. 기존 definition은 원문이며 definition_with_formulas가 복원 설명입니다. "
-            "별표는 원본의 첨자·주석 기호를 유지합니다. 원본에 없는 ×100 등을 추가하지 않았습니다.</p>"
-            + "".join(cards) + "</html>")
+                    f"<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>"
+                    f"{item['mathml']}</math>"
+                    f"<pre>{escape(item['text'])}</pre></figure></div>"
+                )
+    html = (
+        "<!doctype html><html lang='ko'><meta charset='utf-8'><title>수식 복원 비교</title>"
+        "<style>body{font-family:sans-serif;margin:32px;line-height:1.6}"
+        ".pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}"
+        "figure{margin:0;padding:16px;border:1px solid #ccc;overflow:auto}"
+        "img{max-width:100%;height:auto}pre{white-space:pre-wrap}math{font-size:1.2rem}"
+        "@media(max-width:900px){.pair{grid-template-columns:1fr}}</style>"
+        "<h1>수식 원본·복원 결과 비교</h1>"
+        "<p>검토한 8개 용어에만 적용. 기존 definition은 원문이며 definition_with_formulas가 복원 설명입니다. "
+        "별표는 원본의 첨자·주석 기호를 유지합니다. 원본에 없는 ×100 등을 추가하지 않았습니다.</p>"
+        + "".join(cards)
+        + "</html>"
+    )
     (output_dir / f"{prefix}_formula_comparison.html").write_text(html, encoding="utf-8")
