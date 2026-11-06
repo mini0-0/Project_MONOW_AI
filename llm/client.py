@@ -12,6 +12,8 @@ from db.database import DEFAULT_ENV
 from db.models import validate_simple_explanation
 
 FREE_TIER_MODELS = frozenset({"gemini-3.5-flash-lite", "gemini-3.5-flash"})
+MAX_HTTP_RETRIES = 3
+RETRY_BACKOFF_SECONDS = 2
 HTTP_ERROR_TYPES = {
     400: "INVALID_REQUEST",
     401: "AUTHENTICATION_ERROR",
@@ -53,22 +55,14 @@ PROVIDER_STATUSES = frozenset(
 class GenerationError(ValueError):
     default_error_type = "GENERATION_ERROR"
 
-    def __init__(
-        self,
-        message,
-        *,
-        http_status=None,
-        error_type=None,
-        provider_status=None,
-    ):
+    def __init__(self, message, *, http_status=None, error_type=None, provider_status=None):
         super().__init__(message)
         self.http_status = http_status
         self.error_type = error_type or self.default_error_type
         # SDK의 원문 상태나 메시지를 그대로 로그에 전달하지 않는다.
         self.provider_status = (
             provider_status
-            if isinstance(provider_status, str)
-            and provider_status in PROVIDER_STATUSES
+            if isinstance(provider_status, str) and provider_status in PROVIDER_STATUSES
             else None
         )
 
@@ -90,21 +84,21 @@ class QuotaExceededError(GenerationStopped):
 
 def _http_diagnostics(error):
     status = getattr(getattr(error, "response", None), "status_code", None)
+
     if type(status) is not int or not 100 <= status <= 599:
         status = getattr(error, "code", None)
+
     if type(status) is not int or not 100 <= status <= 599:
         status = None
     error_type = HTTP_ERROR_TYPES.get(status, "HTTP_ERROR")
     message = getattr(error, "message", None)
     # 원문은 분석에만 사용하며 메시지에 포함된 값이나 경로는 출력하지 않는다.
+
     if status == 400 and isinstance(message, str):
         message = message.lower()
         if (
             any(word in message for word in ("unknown name", "unknown field"))
-            and any(
-                word in message
-                for word in ("response_schema", "responseschema")
-            )
+            and any(word in message for word in ("response_schema", "responseschema"))
             and any(
                 word in message
                 for word in (
@@ -116,6 +110,7 @@ def _http_diagnostics(error):
             )
         ):
             error_type = "UNSUPPORTED_RESPONSE_SCHEMA_FIELD"
+
     return {
         "http_status": status,
         "error_type": error_type,
@@ -135,12 +130,7 @@ class ExplanationOutput(BaseModel):
 
 class GeminiClient:
     def __init__(
-        self,
-        model: str,
-        sdk: genai.Client,
-        *,
-        free_tier_confirmed=False,
-        interval_seconds=5,
+        self, model: str, sdk: genai.Client, *, free_tier_confirmed=False, interval_seconds=12
     ):
         self._check_free_tier(model, free_tier_confirmed)
         self.model = model
@@ -158,33 +148,27 @@ class GeminiClient:
             )
         if model not in FREE_TIER_MODELS:
             raise GenerationStopped(
-                "무료 등급 지원을 확인한 Gemini 모델만 허용합니다",
-                error_type="MODEL_NOT_ALLOWED",
+                "무료 등급 지원을 확인한 Gemini 모델만 허용합니다", error_type="MODEL_NOT_ALLOWED"
             )
 
     @classmethod
     def from_env(cls, env_file=DEFAULT_ENV):
         config = {**dotenv_values(env_file), **os.environ}
+
         if not all(
-            config.get(key) and config[key].strip()
-            for key in ("GEMINI_API_KEY", "GEMINI_MODEL")
+            config.get(key) and config[key].strip() for key in ("GEMINI_API_KEY", "GEMINI_MODEL")
         ):
             raise GenerationStopped(
-                "GEMINI_API_KEY와 GEMINI_MODEL 설정이 필요합니다",
-                error_type="CONFIG_MISSING",
+                "GEMINI_API_KEY와 GEMINI_MODEL 설정이 필요합니다", error_type="CONFIG_MISSING"
             )
 
         model = config["GEMINI_MODEL"].strip()
-        confirmed = (
-            config.get("GEMINI_FREE_TIER_CONFIRMED", "").lower() == "true"
-        )
+        confirmed = config.get("GEMINI_FREE_TIER_CONFIRMED", "").lower() == "true"
         cls._check_free_tier(model, confirmed)
 
         try:
-            timeout = float(config.get("GEMINI_TIMEOUT_SECONDS", "30"))
-            interval = float(
-                config.get("GEMINI_REQUEST_INTERVAL_SECONDS", "12")
-            )
+            timeout = float(config.get("GEMINI_TIMEOUT_SECONDS", "60"))
+            interval = float(config.get("GEMINI_REQUEST_INTERVAL_SECONDS", "12"))
             if (
                 not math.isfinite(timeout)
                 or timeout < 0.001
@@ -211,35 +195,40 @@ class GeminiClient:
                 retry_options=types.HttpRetryOptions(attempts=1),
             ),
         )
-        return cls(
-            model, sdk, free_tier_confirmed=True, interval_seconds=interval
-        )
+        return cls(model, sdk, free_tier_confirmed=True, interval_seconds=interval)
 
-    def generate(self, instructions: str, source: str) -> tuple[str, str]:
-        if self._last_request is not None:
-            delay = self.interval_seconds - (
-                time.monotonic() - self._last_request
-            )
+    def _generate_content(self, instructions: str, source: str):
+        for retry in range(MAX_HTTP_RETRIES + 1):
+            delay = RETRY_BACKOFF_SECONDS * (2 ** (retry - 1)) if retry else 0
+            if self._last_request is not None:
+                delay = max(delay, self.interval_seconds - (time.monotonic() - self._last_request))
+            # 백오프 중에도 기존 요청 간격을 지켜 무료 등급 호출 속도를 유지한다.
             if delay > 0:
                 time.sleep(delay)
-        self._last_request = time.monotonic()
+            self._last_request = time.monotonic()
 
-        try:
-            response = self.sdk.models.generate_content(
-                model=self.model,
-                contents=source,
-                config=types.GenerateContentConfig(
-                    system_instruction=instructions,
-                    response_mime_type="application/json",
-                    # JSON Schema를 기존 OpenAPI Schema로 변환하지 않고 전송한다.
-                    response_json_schema=ExplanationOutput.model_json_schema(),
-                    max_output_tokens=1024,
-                    candidate_count=1,
-                    thinking_config=types.ThinkingConfig(
-                        thinking_level="minimal"
+            try:
+                return self.sdk.models.generate_content(
+                    model=self.model,
+                    contents=source,
+                    config=types.GenerateContentConfig(
+                        system_instruction=instructions,
+                        response_mime_type="application/json",
+                        # JSON Schema를 기존 OpenAPI Schema로 변환하지 않고 전송한다.
+                        response_json_schema=(ExplanationOutput.model_json_schema()),
+                        max_output_tokens=1024,
+                        candidate_count=1,
+                        thinking_config=types.ThinkingConfig(thinking_level="minimal"),
                     ),
-                ),
-            )
+                )
+            except (errors.APIError, httpx.HTTPStatusError) as error:
+                status = _http_diagnostics(error)["http_status"]
+                if status not in (503, 504) or retry == MAX_HTTP_RETRIES:
+                    raise
+
+    def generate(self, instructions: str, source: str) -> tuple[str, str]:
+        try:
+            response = self._generate_content(instructions, source)
         except (errors.APIError, httpx.HTTPStatusError) as error:
             details = _http_diagnostics(error)
             if details["http_status"] == 429:
@@ -261,36 +250,27 @@ class GeminiClient:
                 httpx.PoolTimeout: "POOL_TIMEOUT",
             }
             error_type = next(
-                (
-                    name
-                    for kind, name in timeout_types.items()
-                    if isinstance(error, kind)
-                ),
+                (name for kind, name in timeout_types.items() if isinstance(error, kind)),
                 "NETWORK_TIMEOUT",
             )
             raise GenerationStopped(
-                "Gemini 네트워크 타임아웃으로 추가 호출을 중단합니다",
-                error_type=error_type,
+                "Gemini 네트워크 타임아웃으로 추가 호출을 중단합니다", error_type=error_type
             ) from None
         except httpx.ConnectError:
             raise GenerationStopped(
-                "Gemini 네트워크 연결 실패로 추가 호출을 중단합니다",
-                error_type="CONNECTION_ERROR",
+                "Gemini 네트워크 연결 실패로 추가 호출을 중단합니다", error_type="CONNECTION_ERROR"
             ) from None
         except httpx.ProxyError:
             raise GenerationStopped(
-                "Gemini 프록시 연결 실패로 추가 호출을 중단합니다",
-                error_type="PROXY_ERROR",
+                "Gemini 프록시 연결 실패로 추가 호출을 중단합니다", error_type="PROXY_ERROR"
             ) from None
         except httpx.HTTPError:
             raise GenerationStopped(
-                "Gemini 네트워크 오류로 추가 호출을 중단합니다",
-                error_type="NETWORK_ERROR",
+                "Gemini 네트워크 오류로 추가 호출을 중단합니다", error_type="NETWORK_ERROR"
             ) from None
         except ValueError:
             raise GenerationError(
-                "Gemini 구조화 응답 검증 실패",
-                error_type="RESPONSE_VALIDATION_ERROR",
+                "Gemini 구조화 응답 검증 실패", error_type="RESPONSE_VALIDATION_ERROR"
             ) from None
 
         feedback = response.prompt_feedback
@@ -299,9 +279,7 @@ class GeminiClient:
             None,
             types.BlockedReason.BLOCKED_REASON_UNSPECIFIED,
         ):
-            raise GenerationError(
-                "Gemini가 입력을 차단했습니다", error_type="RESPONSE_BLOCKED"
-            )
+            raise GenerationError("Gemini가 입력을 차단했습니다", error_type="RESPONSE_BLOCKED")
         if (
             not response.candidates
             or len(response.candidates) != 1
@@ -312,21 +290,16 @@ class GeminiClient:
                 "Gemini 응답이 완료되지 않았거나 검증에 실패했습니다",
                 error_type="RESPONSE_INVALID_OR_INCOMPLETE",
             )
-        if (
-            not isinstance(response.model_version, str)
-            or not response.model_version.strip()
-        ):
+        if not isinstance(response.model_version, str) or not response.model_version.strip():
             raise GenerationError(
-                "응답 모델 정보를 확인할 수 없습니다",
-                error_type="RESPONSE_MODEL_MISSING",
+                "응답 모델 정보를 확인할 수 없습니다", error_type="RESPONSE_MODEL_MISSING"
             )
 
         try:
             parsed = ExplanationOutput.model_validate(response.parsed)
         except ValueError:
             raise GenerationError(
-                "Gemini 구조화 응답 검증 실패",
-                error_type="RESPONSE_VALIDATION_ERROR",
+                "Gemini 구조화 응답 검증 실패", error_type="RESPONSE_VALIDATION_ERROR"
             ) from None
 
         return parsed.explanation, response.model_version
