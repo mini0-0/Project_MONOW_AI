@@ -22,6 +22,7 @@ class ExplanationNotFoundError(SummaryUnavailableError):
 class StaleExplanationError(SummaryUnavailableError):
     pass
 
+
 # def first_sentence(definition: str) -> str:
 #     text = re.sub(r"\s+", " ", definition).strip()
 #     if not text:
@@ -44,9 +45,7 @@ class StaleExplanationError(SummaryUnavailableError):
 #     return text
 
 
-def simple_glossary(
-    repository: GlossaryRepository, term: str
-) -> SimpleGlossaryResponse:
+def simple_glossary(repository: GlossaryRepository, term: str) -> SimpleGlossaryResponse:
     record = repository.find_by_term(term)
 
     if record is None:
@@ -56,9 +55,8 @@ def simple_glossary(
 
     if explanation is None:
         raise ExplanationNotFoundError(term)
-    current_hash = hashlib.sha256(
-        record["definition"].encode("utf-8")
-    ).hexdigest()
+
+    current_hash = hashlib.sha256(record["definition"].encode("utf-8")).hexdigest()
 
     if explanation["definition_hash"] != current_hash:
         raise StaleExplanationError(term)
@@ -72,6 +70,4 @@ def simple_glossary(
             source_book_page=record["source_book_page"],
         )
     except ValidationError:
-        raise SummaryUnavailableError(
-            "저장된 설명의 형식 검토가 필요합니다"
-        ) from None
+        raise SummaryUnavailableError("저장된 설명의 형식 검토가 필요합니다") from None

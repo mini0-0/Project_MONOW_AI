@@ -22,9 +22,7 @@ class SimpleGlossaryRequest(BaseModel):
 class SimpleGlossaryResponse(BaseModel):
     term: str
     summary: str
-    review_status: Literal[
-        "verified", "automated_checks_passed", "needs_review"
-    ]
+    review_status: Literal["verified", "automated_checks_passed", "needs_review"]
     source_pdf_page: int
     source_book_page: int | None
 

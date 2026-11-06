@@ -4,7 +4,7 @@ import json
 from db.models import validate_simple_explanation
 from llm.client import GeminiClient, GenerationError
 
-PROMPT_VERSION = "simple-v2-30"
+PROMPT_VERSION = "simple-v3-60"
 INSTRUCTIONS = """금융 초보자를 위해 금융 용어와 원본 정의를 바탕으로 쉬운 한 줄 설명을 작성하세요.
 
 작성 규칙:
@@ -12,7 +12,7 @@ INSTRUCTIONS = """금융 초보자를 위해 금융 용어와 원본 정의를 �
 2. 용어를 구별하는 데 필요한 특징은 유지하세요.
 3. 어려운 금융 표현은 뜻을 바꾸지 않는 범위에서 일상적인 말로 바꾸세요.
 4. 원본에 없는 사실, 추측, 투자 조언은 추가하지 마세요.
-5. 공백과 문장부호를 제외하고 30자 이내로 작성하세요.
+5. 공백과 문장부호를 제외하고 60자 이내로 작성하세요.
 6. 완결된 한 문장으로 작성하고 마지막에 마침표를 붙이세요.
 7. 제목, 목록, 줄바꿈, 인사말, 인용 부호는 사용하지 마세요.
 8. 출력은 explanation 필드에 설명 문장만 포함하세요.
@@ -31,15 +31,12 @@ def validate_explanation(text: str) -> str:
         raise GenerationError(str(error)) from None
 
 
-def generate_explanation(
-    client: GeminiClient, term: str, definition: str
-) -> dict:
+def generate_explanation(client: GeminiClient, term: str, definition: str) -> dict:
     if not term.strip() or not definition.strip():
         raise GenerationError("용어와 원본 설명이 필요합니다")
 
-    source = json.dumps(
-        {"term": term, "definition": definition}, ensure_ascii=False
-    )
+    source = json.dumps({"term": term, "definition": definition}, ensure_ascii=False)
+
     text, model = client.generate(INSTRUCTIONS, source)
 
     return {
