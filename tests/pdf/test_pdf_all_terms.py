@@ -21,34 +21,45 @@ class AllTermsTests(unittest.TestCase):
         cls.terms = extract_terms()
         cls.report = validate_extraction(DEFAULT_PDF, cls.terms)
 
-    def test_given_full_pdf_when_extracted_then_count_matches_toc(self):
+    def test_match_extracted_term_count_to_toc(self):
         with pymupdf.open(DEFAULT_PDF) as document:
-            independent_count = sum(len(re.findall(r"·{2,}\s*\d+\s*$", page.get_text(), re.M))
-                                    for page in document[3:17])
+            independent_count = sum(
+                len(re.findall(r"·{2,}\s*\d+\s*$", page.get_text(), re.M))
+                for page in document[3:17]
+            )
         self.assertEqual(independent_count, 789)
         self.assertEqual(len(self.terms), independent_count)
         self.assertEqual(self.report["summary"]["difference_from_book_title"], -11)
 
-    def test_given_toc_when_compared_then_titles_pages_and_order_match(self):
-        expected = [(title_key(entry["term"]), entry["source_book_page"])
-                    for entry in self.report["toc_entries"]]
+    def test_match_toc_titles_pages_and_order(self):
+        expected = [
+            (title_key(entry["term"]), entry["source_book_page"])
+            for entry in self.report["toc_entries"]
+        ]
         actual = [(title_key(term.term), term.source_book_page) for term in self.terms]
         self.assertEqual(actual, expected)
         self.assertEqual(self.report["missing_terms"], [])
         self.assertEqual(self.report["unexpected_terms"], [])
         self.assertEqual(self.report["toc_parse_issues"], [])
 
-    def test_given_wrapped_toc_when_parsed_then_quotes_are_preserved(self):
+    def test_preserve_wrapped_toc_titles_and_quote_variants(self):
         expected = "경영실태평가/은행경영실태 평가등급제도"
-        self.assertTrue(any(title_key(entry["term"]) == title_key(expected)
-                            for entry in self.report["toc_entries"]))
-        quote_differences = [entry for entry in self.report["presentation_differences"]
-                             if entry["kind"] == "quote_variant"]
+        self.assertTrue(
+            any(
+                title_key(entry["term"]) == title_key(expected)
+                for entry in self.report["toc_entries"]
+            )
+        )
+        quote_differences = [
+            entry
+            for entry in self.report["presentation_differences"]
+            if entry["kind"] == "quote_variant"
+        ]
         self.assertEqual(len(quote_differences), 1)
         self.assertEqual(quote_differences[0]["toc_term"], "트리핀 딜레마(Triffin's Dilemma)")
         self.assertEqual(quote_differences[0]["body_term"], "트리핀 딜레마(Triffin’s Dilemma)")
 
-    def test_given_three_term_scope_when_extracted_then_records_match(self):
+    def test_match_three_term_extraction_to_baseline(self):
         selected = extract_terms(targets=TARGETS)
         by_title = {term.term: term for term in self.terms}
         self.assertEqual([term.term for term in selected], list(TARGETS))
@@ -56,10 +67,11 @@ class AllTermsTests(unittest.TestCase):
         self.assertEqual([term.to_dict() for term in selected], previous)
         self.assertEqual(selected, [by_title[title] for title in TARGETS])
 
-    def test_given_body_records_when_checked_then_no_empty_or_duplicates(self):
+    def test_extract_unique_nonempty_terms_with_valid_pages(self):
         self.assertEqual(self.report["empty_definitions"], [])
         self.assertEqual(self.report["duplicate_terms"], [])
         self.assertEqual(self.report["duplicate_toc_entries"], [])
+
         for term in self.terms:
             self.assertTrue(term.definition.strip())
             self.assertTrue(19 <= term.source_pdf_page <= 423)
@@ -68,77 +80,102 @@ class AllTermsTests(unittest.TestCase):
         self.assertEqual(self.terms[-1].term, "V-KOSPI")
         self.assertNotIn("발행인", self.terms[-1].definition)
 
-    def test_given_all_definitions_when_cleaned_then_characters_are_kept(self):
+    def test_preserve_definition_characters_during_cleanup(self):
         for term in self.terms:
             with self.subTest(term=term.term):
-                self.assertEqual(re.sub(r"\s", "", term.definition),
-                                 re.sub(r"\s", "", clean_definition(term.definition)))
+                self.assertEqual(
+                    re.sub(r"\s", "", term.definition),
+                    re.sub(r"\s", "", clean_definition(term.definition)),
+                )
 
-    def test_given_multpage_term_when_extracted_then_body_is_connected(self):
+    def test_join_multipage_definition_and_related_terms(self):
         household = next(term for term in self.terms if term.term == "가계수지")
         self.assertIn("흑자를 \n냈다면", household.definition)
         self.assertTrue(household.definition.rstrip().endswith("항목이 있다."))
         self.assertEqual(household.related_terms, ["경상수지", "재정수지"])
 
-    def test_given_tables_or_formulas_when_extracted_then_not_removed(self):
+    def test_retain_tables_and_formulas_for_review(self):
         reviews = {entry["term"]: entry for entry in self.report["manual_review"]}
         self.assertIn("formula_symbols", reviews["가계순저축률"]["reasons"])
         self.assertIn("formula_font", reviews["금리평가이론"]["reasons"])
         self.assertIn("table_layout", reviews["죄수의 딜레마"]["reasons"])
         formula = next(term for term in self.terms if term.term == "가계순저축률")
         self.assertIn("× 100", formula.definition)
-        self.assertIn("(-1, -1)", next(t for t in self.terms if t.term == "죄수의 딜레마").definition)
+        self.assertIn(
+            "(-1, -1)", next(t for t in self.terms if t.term == "죄수의 딜레마").definition
+        )
 
-    def test_given_short_definitions_when_checked_then_flagged_not_rewritten(
-        self,
-    ):
+    def test_flag_short_definitions_without_rewriting(self):
         flagged = {entry["term"] for entry in self.report["unusual_lengths"]}
         self.assertEqual(flagged, {"만기수익률", "모기지대출", "빈일자리율"})
         self.assertIn("만기수익률", {term.term for term in self.terms})
 
-    def test_given_reference_differences_when_checked_then_audit_is_visible(
-        self,
-    ):
+    def test_report_reference_differences_and_review_reasons(self):
         self.assertTrue(self.report["checks"]["independent_reference_no_missing_characters"])
         self.assertTrue(self.report["checks"]["no_obvious_body_contamination"])
         self.assertFalse(self.report["checks"]["independent_reference_text_match"])
         differences = self.report["reference_text_differences"]
         self.assertEqual(len(differences), 11)
         self.assertEqual(sum(entry["order_only"] for entry in differences), 9)
-        controls = [entry for entry in self.report["manual_review"]
-                    if "pdf_control_character" in entry["reasons"]]
+        controls = [
+            entry
+            for entry in self.report["manual_review"]
+            if "pdf_control_character" in entry["reasons"]
+        ]
         self.assertEqual(len(controls), 2)
-        self.assertEqual(len(self.report["manual_review"]), self.report["summary"]["review_term_count"])
+        self.assertEqual(
+            len(self.report["manual_review"]), self.report["summary"]["review_term_count"]
+        )
 
-    def test_given_json_export_when_read_back_then_raw_and_cleaned_match(self):
+    def test_round_trip_raw_and_cleaned_json(self):
+        # Given
         with tempfile.TemporaryDirectory() as directory:
+            # When
             write_results(directory, self.terms, self.report)
             raw = json.loads((Path(directory) / "all_terms_raw.json").read_text())
             cleaned = json.loads((Path(directory) / "all_terms_cleaned.json").read_text())
+
+            # Then
             self.assertEqual(raw, [term.to_dict() for term in self.terms])
             self.assertEqual(cleaned, [term.to_dict(True) for term in self.terms])
             self.assertTrue((Path(directory) / "all_terms_report.md").exists())
 
-    def test_given_three_term_cli_when_run_then_json_and_files_match(self):
+    def test_match_three_term_cli_output_to_saved_json(self):
+        # Given
         with tempfile.TemporaryDirectory() as directory:
+            # When
             result = subprocess.run(
-                [sys.executable, str(PROJECT_ROOT / "pdf" / "extractor.py"),
-                 "--scope", "three", "--output-dir", directory],
-                capture_output=True, text=True, check=True,
+                [
+                    sys.executable,
+                    str(PROJECT_ROOT / "pdf" / "extractor.py"),
+                    "--scope",
+                    "three",
+                    "--output-dir",
+                    directory,
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
             )
             records = json.loads(result.stdout)
+            # Then
             self.assertEqual([record["term"] for record in records], list(TARGETS))
             saved = json.loads((Path(directory) / "glossary.json").read_text())
             self.assertEqual(records, saved)
 
-    def test_given_corrupt_records_when_validated_then_errors_are_detected(
-        self,
-    ):
+    def test_detect_corrupt_records_in_validation(self):
+        # Given
         selected = [term for term in self.terms if term.term in TARGETS]
-        damaged = [replace(selected[0], definition=""),
-                   replace(selected[0], definition="연관검색어 잘못 섞인 본문"),
-                   replace(selected[1], source_book_page=999)]
+        damaged = [
+            replace(selected[0], definition=""),
+            replace(selected[0], definition="연관검색어 잘못 섞인 본문"),
+            replace(selected[1], source_book_page=999),
+        ]
+
+        # When
         report = validate_extraction(DEFAULT_PDF, damaged)
+
+        # Then
         self.assertFalse(report["checks"]["toc_title_and_page_match"])
         self.assertFalse(report["checks"]["no_duplicate_terms"])
         self.assertFalse(report["checks"]["no_empty_definitions"])
